@@ -40,20 +40,24 @@
 	        alert("bla");
     	    $(document).on("ready", function () {
     	        alert("bla2");
-    	        $('#calcTip').on('click', calcTip);
-    	        $('#saveSettings').on('click', saveSettings);
-    	        var tipPercentSetting = localStorage.getItem('tipPercentage');
-    	        if (tipPercentSetting) {
-    	            tipPercent = parseFloat(tipPercentSetting);
+    	        if (testrun == false) {
+    	            $(document).on("deviceready", function () {
+    	                alert("bla3");
+    	                onDeviceReady();
+    	            });
+    	        } else {
+    	            onDeviceReady();    
     	        }
-    	        $('#tipPercentage').val(tipPercent);
+    	        //$('#calcTip').on('click', calcTip);
+    	        //$('#saveSettings').on('click', saveSettings);
+    	        //var tipPercentSetting = localStorage.getItem('tipPercentage');
+    	        //if (tipPercentSetting) {
+    	        //    tipPercent = parseFloat(tipPercentSetting);
+    	        //}
+    	        //$('#tipPercentage').val(tipPercent);
     	    });
 
-    	    $(document).on("deviceready", function () {
-    	        alert("bla3");
-    	        StatusBar.overlaysWebView(false);
-    	        StatusBar.backgroundColorByName("gray");
-    	    });
+    	    
 
 	        //function onLoad() {
     	    //    if (testrun == false) {
@@ -351,7 +355,7 @@
             
         </script>
 	</head>
-    <body onLoad="onLoad()">
+    <body > <!--onLoad="onLoad()"-->
             <div id="currentDiv">
                 <span class="fastclick">
                     <div id="currentHead" style="height: 44px;"></div>
