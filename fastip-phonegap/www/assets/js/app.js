@@ -23,6 +23,7 @@
     };
 
     $(document).on("ready", function () {
+        alert("doc ready");
         $('#calcTip').on('click', calcTip);
         $('#saveSettings').on('click', saveSettings);
         var tipPercentSetting = localStorage.getItem('tipPercentage');
@@ -33,6 +34,7 @@
     });
 
     $(document).on("deviceready", function () {
+        alert("device ready");
         StatusBar.overlaysWebView(false);
         StatusBar.backgroundColorByName("gray");
     });
