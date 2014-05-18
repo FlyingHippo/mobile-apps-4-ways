@@ -175,21 +175,21 @@
         }
 
         function onDeviceReady() {
-            alert("bla1");
+            try {
+
+                alert("bla1");
             document.addEventListener("resume", onResume, false);
             alert("bla2");
             bindTouch();
             alert("bla3");
-            try {
+           
 
 
                 if (testrun == false) {
                     //setupCamera();
                     checkLocation();
                 }
-            } catch (err) {
-                alert(err);
-            }
+           
             alert("bla4");
             //else {
             //    var latitude = 56.16390607394954;
@@ -197,7 +197,6 @@
             //    var zoom = 6;
             //    setupMaps(latitude, longitude, zoom);    
             //}
-
 
             $('#currentContent').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
             $('#currentContent').find('.content').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
@@ -233,6 +232,9 @@
                             );
 
             checkPreAuth();
+            } catch (err) {
+                alert(err);
+            }
         }
     	</script>
         <script>
