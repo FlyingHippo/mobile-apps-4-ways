@@ -21,7 +21,310 @@
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&language=da"></script>
      <script src="assets/js/spin.min.js"></script>
         <script src="assets/js/l10n.js"></script>
-        <script src="assets/js/dictionary_da.js"></script>
+    <script src="assets/js/dictionary_da.js"></script>
+    <script>
+        var maxDistanceTooJobKM = 1;//-1000.5;
+        var testrun = false;
+        var phoneType = "Android"; //iPhone, Android, WindowsPhone, Other
+        var appVersion = 1.05;
+
+        //var server = 'https://dev.jobwalk.dk'; //dev
+        var server = 'https://srv1.jobwalk.dk'; //live
+        //function onLoad() {
+        //    if (testrun == false) {
+        //        document.addEventListener("deviceready", onDeviceReady, false);
+        //    } else {
+        //        onDeviceReady();
+        //    }
+
+        //}
+
+        //preload images
+        var footerButtonProfile = new Image();
+        footerButtonProfile.src = "assets/css/images/myprofile.png";
+
+        var footerButtonProfileActive = new Image();
+        footerButtonProfileActive.src = "assets/css/images/myprofile-active.png";
+
+        var footerButtonProfileDark = new Image();
+        footerButtonProfileDark.src = "assets/css/images/myprofile-dark.png";
+
+        var footerButtonAllJobs = new Image();
+        footerButtonAllJobs.src = "assets/css/images/alljobs.png";
+
+        var footerButtonAllJobsActive = new Image();
+        footerButtonAllJobsActive.src = "assets/css/images/alljobs-active.png";
+
+        var footerButtonAllJobsDark = new Image();
+        footerButtonAllJobsDark.src = "assets/css/images/alljobs-dark.png";
+
+        var footerButtonMyJobs = new Image();
+        footerButtonMyJobs.src = "assets/css/images/myjobs.png";
+
+        var footerButtonMyJobsActive = new Image();
+        footerButtonMyJobsActive.src = "assets/css/images/myjobs-active.png";
+
+        var footerButtonMyJobsDark = new Image();
+        footerButtonMyJobsDark.src = "assets/css/images/myjobs-dark.png";
+
+
+        var headerBlue = new Image();
+        headerBlue.src = "assets/css/images/navbar-bg.png";
+
+        var headerGray = new Image();
+        headerGray.src = "assets/css/images/navbar-bg-gray.png";
+
+        var bottomLeather = new Image();
+        bottomLeather.src = "assets/css/images/bottom-leather.png";
+
+        function bindTouch() {
+            if (document.documentElement.hasOwnProperty('ontouchstart')) {
+                $('.header-button').on('touchstart', function (e) {
+                    $(this).addClass('tappable-active');
+                });
+                $('.header-button').on('touchend', function (e) {
+                    $(this).removeClass('tappable-active');
+                });
+                $('.content-button').on('touchstart', function (e) {
+                    $(this).addClass('tappable-active');
+                });
+                $('.content-button').on('touchend', function (e) {
+                    $(this).removeClass('tappable-active');
+                });
+                $('.footerButtonProfile').on('touchstart', function (e) {
+                    $(this).addClass('footerButtonProfile-active');
+                });
+                $('.footerButtonProfile').on('touchend', function (e) {
+                    $(this).removeClass('footerButtonProfile-active');
+                });
+                $('.footerButtonAllJobs').on('touchstart', function (e) {
+                    $(this).addClass('footerButtonAllJobs-active');
+                });
+                $('.footerButtonAllJobs').on('touchend', function (e) {
+                    $(this).removeClass('footerButtonAllJobs-active');
+                });
+                $('.footerButtonMyJobs').on('touchstart', function (e) {
+                    $(this).addClass('footerButtonMyJobs-active');
+                });
+                $('.footerButtonMyJobs').on('touchend', function (e) {
+                    $(this).removeClass('footerButtonMyJobs-active');
+                });
+                $('.footerButtonCreate').on('touchstart', function (e) {
+                    $(this).addClass('footerButtonCreate-active');
+                });
+                $('.footerButtonCreate').on('touchend', function (e) {
+                    $(this).removeClass('footerButtonCreate-active');
+                });
+                $('.footerButtonLogin').on('touchstart', function (e) {
+                    $(this).addClass('footerButtonLogin-active');
+                });
+                $('.footerButtonLogin').on('touchend', function (e) {
+                    $(this).removeClass('footerButtonLogin-active');
+                });
+            } else {
+                $('.header-button').mousedown(function () {
+                    $(this).addClass('tappable-active');
+                });
+                $('.header-button').mouseup(function () {
+                    $(this).removeClass('tappable-active');
+                });
+                $('.content-button').mousedown(function () {
+                    $(this).addClass('tappable-active');
+                });
+                $('.content-button').mouseup(function () {
+                    $(this).removeClass('tappable-active');
+                });
+                $('.footerButtonProfile').mousedown(function () {
+                    $(this).addClass('footerButtonProfile-active');
+                });
+                $('.footerButtonProfile').mouseup(function () {
+                    $(this).removeClass('footerButtonProfile-active');
+                });
+                $('.footerButtonAllJobs').mousedown(function () {
+                    $(this).addClass('footerButtonAllJobs-active');
+                });
+                $('.footerButtonAllJobs').mouseup(function () {
+                    $(this).removeClass('footerButtonAllJobs-active');
+                });
+                $('.footerButtonMyJobs').mousedown(function () {
+                    $(this).addClass('footerButtonMyJobs-active');
+                });
+                $('.footerButtonMyJobs').mouseup(function () {
+                    $(this).removeClass('footerButtonMyJobs-active');
+                });
+                $('.footerButtonCreate').mousedown(function () {
+                    $(this).addClass('footerButtonCreate-active');
+                });
+                $('.footerButtonCreate').mouseup(function () {
+                    $(this).removeClass('footerButtonCreate-active');
+                });
+                $('.footerButtonLogin').mousedown(function () {
+                    $(this).addClass('footerButtonLogin-active');
+                });
+                $('.footerButtonLogin').mouseup(function () {
+                    $(this).removeClass('footerButtonLogin-active');
+                });
+            }
+
+        }
+
+        function onResume() {
+            if (globalCurrentDiv == '#divFindJobList') {
+                loadJobList(false);
+            }
+        }
+
+        function onDeviceReady() {
+
+            document.addEventListener("resume", onResume, false);
+
+            bindTouch();
+
+            if (testrun == false) {
+                setupCamera();
+                checkLocation();
+            }
+            //else {
+            //    var latitude = 56.16390607394954;
+            //    var longitude = 10.56884765625;
+            //    var zoom = 6;
+            //    setupMaps(latitude, longitude, zoom);    
+            //}
+
+
+            $('#currentContent').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
+            $('#currentContent').find('.content').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
+            $('#currentContent').find('.scroll').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
+
+            $('.inputtextbox').each(function () {
+                $(this).focusout(function () {
+                    focusOutInputDiv($(this));
+                });
+            });
+
+            initFastButtons();
+
+            if (window.localStorage["MasterLanguage"] != null && window.localStorage["MasterLanguage"] != "") {
+                MasterLanguage = window.localStorage["MasterLanguage"];
+            } else {
+                MasterLanguage = "Auto";
+            }
+
+            $('#inputMyProfileChangeLanguage').val(MasterLanguage);
+
+            $('#inputMyProfileChangeLanguage').prev().children().first().empty();
+            $.each($('#inputMyProfileChangeLanguage').children(":selected"), function (i, item) {
+                $('#inputMyProfileChangeLanguage').prev().children().first().append('<span>' + $(item).text() + '</span>');
+            });
+
+            Localization.initialize
+                            (
+                               // Dictionnary
+                               dictionary_master,
+                               // Fallback language
+                               "en"
+                            );
+
+            checkPreAuth();
+        }
+    	</script>
+        <script>
+            function checkPreAuth() {
+                if (window.localStorage["username"] != undefined && window.localStorage["username"] != "null" && window.localStorage["password"] != undefined && window.localStorage["password"] != "null") {
+                    $("#username").val(window.localStorage["username"]);
+                    $("#password").val(window.localStorage["password"]);
+                    //alert("gemt brugernavn: " + window.localStorage["username"] + ". Gemt password: " + window.localStorage["password"]);
+                    DoLogin();
+                } else {
+                    goToFirstPage('#divIntro1');
+                }
+
+            }
+
+            function DoLogin() {
+                if (spinner == null) {
+                    spinnerStart();
+                }
+                //disable the button so we can't resubmit while we wait
+                $("#btnLogin", this).attr("disabled", "disabled");
+                var u = $("#username").val();
+                var p = $("#password").val();
+                if (u != '' && p != '') {
+                    $.getJSON(server + "/ws/Service1.svc/LoginGetUserType/" + u + "/" + p + "/" + appVersion, function (json) {
+                        if (json.LoginStatus == "ok") {
+                            //store
+                            window.localStorage["username"] = u;
+                            window.localStorage["password"] = p;
+                            window.localStorage["userID"] = parseInt(json.ID);
+                            window.localStorage["userType"] = json.UserType;
+                            if (window.localStorage["userID"] != window.localStorage["lastUserID"]) {
+                                window.localStorage["lastUserID"] = parseInt(json.ID);
+                                window.localStorage["currentJob"] = null;
+                                window.localStorage["reservedJobJson"] = null;
+                                window.localStorage["currentJobStepNO"] = null;
+                            }
+
+                            loadMyProfile(false);
+                            if (hideSplash == true) {
+                                goToFirstPage('#divFindJobList');
+                            } else {
+                                goForward('#divFindJobList');
+                            }
+                        } else {
+                            if (spinner != null) {
+                                spinnerStop();
+                            }
+
+                            navigator.notification.alert(
+                                _(json.LoginStatus), // message
+                                function () {
+                                }, // callback to invoke with index of button pressed
+                                _('lblLoginFailed'), // title
+                                _('btnOk')   // buttonLabels
+                            );
+                            if ($.trim($('#currentContent').html()) == '') {
+                                goToFirstPage('#divLogin');
+                            }
+                        }
+                    }).error(function () {
+                        if (spinner != null) {
+                            spinnerStop();
+                        }
+                        navigator.notification.alert(
+                               _('noConnection'),               // message
+                               function () { }, // callback to invoke with index of button pressed
+                               _('lblLoginFailed'), // title
+                               _('btnOk')   // buttonLabels
+                            );
+                    });
+                }
+                else {
+                    if (spinner != null) {
+                        spinnerStop();
+                    }
+                    navigator.notification.alert(
+                        _('lblBothFieldsRequired'),               // message
+                        function () { }, // callback to invoke with index of button pressed
+                        _('lblLoginFailed'), // title
+                        _('btnOk')   // buttonLabels
+                    );
+                    $("#btnLogin").removeAttr("disabled");
+                }
+                $("#btnLogin").removeAttr("disabled");
+            }
+
+            function logOut() {
+                window.localStorage["username"] = null;
+                window.localStorage["password"] = null;
+                window.localStorage["userID"] = null;
+                $("#username").val('');
+                $("#password").val('');
+                setTimeout(function () {
+                    goBack('#divLogin');
+                }, animationTime);
+            }
+
+        </script>
 </head>
 <body>
 <div data-role="page" class="" id="mainPage">
