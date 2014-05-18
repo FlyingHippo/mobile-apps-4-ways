@@ -24,7 +24,8 @@ Localization = (function () {
     };
 
     Localization.get_preferred_language_callback = function (language) {
-        if(MasterLanguage == "Auto") {
+        alert(language);
+        if (MasterLanguage == "Auto") {
              Localization.language = language.value;
         } else {
             Localization.language = MasterLanguage;

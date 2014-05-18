@@ -176,6 +176,15 @@
 
         function onDeviceReady() {
             try {
+                navigator.notification.confirm('Do you want to quit',
+        function () {
+            if (button == "1") {
+                navigator.app.exitApp();
+            }
+        },
+        'QUIT TITLE',
+        'OK,Cancel'
+    );
 
                 alert("bla1");
             document.addEventListener("resume", onResume, false);
