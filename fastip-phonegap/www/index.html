@@ -204,11 +204,12 @@
     	    }
     	    
     	    function onDeviceReady() {
-    	        
-    	        document.addEventListener("resume", onResume, false);
+	            alert("bla5");
+    	        try {
+    	            document.addEventListener("resume", onResume, false);
 
     	        bindTouch();
-    
+    	        alert("bla6");
     	        if (testrun == false) {
     	            setupCamera(); 
     	            checkLocation();
@@ -230,7 +231,7 @@
     	                focusOutInputDiv($(this));
     	            });
     	        });
-
+    	        alert("bla6");
     	        initFastButtons();
 
     	        if(window.localStorage["MasterLanguage"] != null &&  window.localStorage["MasterLanguage"] != "") {
@@ -238,14 +239,14 @@
     	        } else {
     	            MasterLanguage = "Auto";
     	        }
-
+    	        alert("bla7");
     	        $('#inputMyProfileChangeLanguage').val(MasterLanguage);
 
     	        $('#inputMyProfileChangeLanguage').prev().children().first().empty();
     	        $.each($('#inputMyProfileChangeLanguage').children(":selected"), function (i, item) {
     	            $('#inputMyProfileChangeLanguage').prev().children().first().append('<span>' + $(item).text() + '</span>');
     	        });
-
+    	        alert("bla7");
     	        Localization.initialize
                                 (
                                    // Dictionnary
@@ -255,6 +256,11 @@
                                 );
 
     	        checkPreAuth();
+    	        alert("bla8");
+    	        }
+    	        catch(err) {
+	                alert(err);
+	            }
     	    }
     	</script>
         <script>
