@@ -43,11 +43,15 @@
     	    //    onDeviceReady();    
     	    //});
 
-    	    $(document).on("deviceready", function () {
-	            alert("deviceready");
-    	        StatusBar.overlaysWebView(false);
-    	        StatusBar.backgroundColorByName("gray");
-    	    });
+	        document.addEventListener("deviceready", function () {
+	            alert("123");
+	        }, true);
+
+    	    //$(document).on("deviceready", function () {
+	        //    alert("deviceready");
+    	    //    StatusBar.overlaysWebView(false);
+    	    //    StatusBar.backgroundColorByName("gray");
+    	    //});
 
     	    //preload images
     	    var footerButtonProfile = new Image();
