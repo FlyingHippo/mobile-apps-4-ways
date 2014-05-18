@@ -36,7 +36,20 @@
 
     	    //var server = 'https://dev.jobwalk.dk'; //dev
     	    var server = 'https://srv1.jobwalk.dk'; //live
+    	    function alertDismissed() {
+    	        // do something
+    	    }
+
     	    function onLoad() {
+    	        
+
+    	        navigator.notification.alert(
+                    'You are the winner!',  // message
+                    alertDismissed,         // callback
+                    'Game Over',            // title
+                    'Done'                  // buttonName
+                );
+
     	        if (testrun == false) {
     	            document.addEventListener("deviceready", onDeviceReady, false);
     	        } else {
