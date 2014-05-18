@@ -15,7 +15,7 @@
 	    <script src="assets/js/jquery.effects.core.js"></script>
         <script src="assets/js/jquery.effects.slide.js"></script>
 	    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCl5cvSEehJepn8hEYKQI28EZhrnXJlwZ0&sensor=false&libraries=places"></script> -->
-	    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&language=da"></script>
+	   <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&language=da"></script>-->
 
 	    <!--<script src="lib/ios/CordovaLib/cordova.js"></script>-->
         <!--<script src="lib/android/cordova.js"></script>-->
@@ -38,35 +38,16 @@
     	    var server = 'https://srv1.jobwalk.dk'; //live
 
 	        alert("bla");
-    	    $(document).on("ready", function () {
-    	        alert("bla2");
-    	        //if (testrun == false) {
-    	        //    $(document).on("deviceready", function () {
-    	        //        alert("bla3");
-    	        //        onDeviceReady();
-    	        //    });
-    	        //} else {
-    	            onDeviceReady();    
-    	        //}
-    	        //$('#calcTip').on('click', calcTip);
-    	        //$('#saveSettings').on('click', saveSettings);
-    	        //var tipPercentSetting = localStorage.getItem('tipPercentage');
-    	        //if (tipPercentSetting) {
-    	        //    tipPercent = parseFloat(tipPercentSetting);
-    	        //}
-    	        //$('#tipPercentage').val(tipPercent);
+    	    //$(document).on("ready", function () {
+    	    //    alert("bla2");
+    	    //    onDeviceReady();    
+    	    //});
+
+    	    $(document).on("deviceready", function () {
+	            alert("deviceready");
+    	        StatusBar.overlaysWebView(false);
+    	        StatusBar.backgroundColorByName("gray");
     	    });
-
-    	    
-
-	        //function onLoad() {
-    	    //    if (testrun == false) {
-    	    //        document.addEventListener("deviceready", onDeviceReady, false);
-    	    //    } else {
-    	    //        onDeviceReady();    
-    	    //    }
-	            
-    	    //}
 
     	    //preload images
     	    var footerButtonProfile = new Image();
