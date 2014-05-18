@@ -36,27 +36,33 @@
 
     	    //var server = 'https://dev.jobwalk.dk'; //dev
     	    var server = 'https://srv1.jobwalk.dk'; //live
-    	    function alertDismissed() {
-    	        // do something
-    	    }
 
-    	    function onLoad() {
-    	        
-
-    	        navigator.notification.alert(
-                    'You are the winner!',  // message
-                    alertDismissed,         // callback
-                    'Game Over',            // title
-                    'Done'                  // buttonName
-                );
-
-    	        if (testrun == false) {
-    	            document.addEventListener("deviceready", onDeviceReady, false);
-    	        } else {
-    	            onDeviceReady();    
+	        alert("bla");
+    	    $(document).on("ready", function () {
+    	        alert("bla2");
+    	        $('#calcTip').on('click', calcTip);
+    	        $('#saveSettings').on('click', saveSettings);
+    	        var tipPercentSetting = localStorage.getItem('tipPercentage');
+    	        if (tipPercentSetting) {
+    	            tipPercent = parseFloat(tipPercentSetting);
     	        }
+    	        $('#tipPercentage').val(tipPercent);
+    	    });
+
+    	    $(document).on("deviceready", function () {
+    	        alert("bla3");
+    	        StatusBar.overlaysWebView(false);
+    	        StatusBar.backgroundColorByName("gray");
+    	    });
+
+	        //function onLoad() {
+    	    //    if (testrun == false) {
+    	    //        document.addEventListener("deviceready", onDeviceReady, false);
+    	    //    } else {
+    	    //        onDeviceReady();    
+    	    //    }
 	            
-    	    }
+    	    //}
 
     	    //preload images
     	    var footerButtonProfile = new Image();
