@@ -180,9 +180,15 @@
             alert("bla2");
             bindTouch();
             alert("bla3");
-            if (testrun == false) {
-                setupCamera();
-                checkLocation();
+            try {
+
+
+                if (testrun == false) {
+                    setupCamera();
+                    checkLocation();
+                }
+            } catch (err) {
+                alert(err);
             }
             alert("bla4");
             //else {
