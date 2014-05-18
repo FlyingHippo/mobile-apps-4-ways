@@ -1,55 +1,2256 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <meta charset="utf-8">
-    <title>FasTip - Tip Calculator</title>
-    <link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.4.0.css">
-    <link rel="stylesheet"  href="css/app.css">
-    <script src="js/jquery.js"></script>
-    <script src="js/jquery.mobile-1.4.0.js"></script>
-</head>
-<body>
-<div data-role="page" class="" id="mainPage">
-    <div data-role="header" class="">
-        <h1>FasTip</h1>
-        <a href="#settingsPage" id='settingsButton' class="ui-btn-right" data-role="button" data-icon="gear">Settings</a>
-    </div>
-    <div data-role="content" class="">
-        <form>
-            <div data-role="fieldcontain">
-                <label for="billAmount">Bill Amount:</label>
-                <input type="number" name="billAmount" id="billAmount" data-clear-btn="true" maxlength="3" value="" placeholder="Enter amount here">
+	<head>
+	    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
+        <meta name="format-detection" content="telephone=no">
+        <title>Jobwalk</title>
+        <script src="assets/js/jquery.v1.8.3.js"></script>
+        <script src="assets/js/jquery.mobile-1.2.0.min.js"></script>
+        <link rel="stylesheet" href="assets/css/jquery.mobile-1.2.0.min.css" />
+        <script src="assets/js/fastclick.js"></script>
+	    <script src="assets/js/bootstrap.min.js"></script>
+        <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
+	    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="assets/css/styles.css"/>
+	    <script src="assets/js/jquery.effects.core.js"></script>
+        <script src="assets/js/jquery.effects.slide.js"></script>
+	    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCl5cvSEehJepn8hEYKQI28EZhrnXJlwZ0&sensor=false&libraries=places"></script> -->
+	    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&language=da"></script>
+
+	    <!--<script src="lib/ios/CordovaLib/cordova.js"></script>-->
+        <!--<script src="lib/android/cordova.js"></script>-->
+        
+        
+	    <script src="assets/js/gmapslogic.js"></script>
+	    <script src="assets/js/camera.js"></script>
+        <script src="assets/js/app.js" charset="utf-8"></script>
+	    <!--<script src="assets/js/infobox/infobox.js" type="text/javascript"></script> bruges kun i maps-->
+	    <script src="assets/js/spin.min.js"></script>
+        <script src="assets/js/l10n.js"></script>
+        <script src="assets/js/dictionary_da.js"></script>
+	    <script>
+	        var maxDistanceTooJobKM = 1;//-1000.5;
+	        var testrun = false;
+	        var phoneType = "Android"; //iPhone, Android, WindowsPhone, Other
+	        var appVersion = 1.05;
+
+    	    //var server = 'https://dev.jobwalk.dk'; //dev
+    	    var server = 'https://srv1.jobwalk.dk'; //live
+    	    function onLoad() {
+    	        if (testrun == false) {
+    	            document.addEventListener("deviceready", onDeviceReady, false);
+    	        } else {
+    	            onDeviceReady();    
+    	        }
+	            
+    	    }
+
+    	    //preload images
+    	    var footerButtonProfile = new Image();
+    	    footerButtonProfile.src = "assets/css/images/myprofile.png";
+    	    
+    	    var footerButtonProfileActive = new Image();
+    	    footerButtonProfileActive.src = "assets/css/images/myprofile-active.png";
+
+    	    var footerButtonProfileDark = new Image();
+    	    footerButtonProfileDark.src = "assets/css/images/myprofile-dark.png";
+
+    	    var footerButtonAllJobs = new Image();
+    	    footerButtonAllJobs.src = "assets/css/images/alljobs.png";
+    	    
+    	    var footerButtonAllJobsActive = new Image();
+    	    footerButtonAllJobsActive.src = "assets/css/images/alljobs-active.png";
+    	    
+    	    var footerButtonAllJobsDark = new Image();
+    	    footerButtonAllJobsDark.src = "assets/css/images/alljobs-dark.png";
+
+    	    var footerButtonMyJobs = new Image();
+    	    footerButtonMyJobs.src = "assets/css/images/myjobs.png";
+    	    
+    	    var footerButtonMyJobsActive = new Image();
+    	    footerButtonMyJobsActive.src = "assets/css/images/myjobs-active.png";
+
+    	    var footerButtonMyJobsDark = new Image();
+    	    footerButtonMyJobsDark.src = "assets/css/images/myjobs-dark.png";
+    	    
+
+    	    var headerBlue = new Image();
+    	    headerBlue.src = "assets/css/images/navbar-bg.png";
+    	    
+    	    var headerGray = new Image();
+    	    headerGray.src = "assets/css/images/navbar-bg-gray.png";
+    	    
+    	    var bottomLeather = new Image();
+    	    bottomLeather.src = "assets/css/images/bottom-leather.png";
+
+    	    function bindTouch(){
+    	        if (document.documentElement.hasOwnProperty('ontouchstart')) {
+    	            $('.header-button').on('touchstart', function(e) {
+    	                $(this).addClass('tappable-active');
+    	            });
+    	            $('.header-button').on('touchend', function(e) {
+    	                $(this).removeClass('tappable-active');
+    	            });
+    	            $('.content-button').on('touchstart', function (e) {
+    	                $(this).addClass('tappable-active');
+    	            });
+    	            $('.content-button').on('touchend', function (e) {
+    	                $(this).removeClass('tappable-active');
+    	            });
+    	            $('.footerButtonProfile').on('touchstart', function (e) {
+    	                $(this).addClass('footerButtonProfile-active');
+    	            });
+    	            $('.footerButtonProfile').on('touchend', function (e) {
+    	                $(this).removeClass('footerButtonProfile-active');
+    	            });
+    	            $('.footerButtonAllJobs').on('touchstart', function (e) {
+    	                $(this).addClass('footerButtonAllJobs-active');
+    	            });
+    	            $('.footerButtonAllJobs').on('touchend', function (e) {
+    	                $(this).removeClass('footerButtonAllJobs-active');
+    	            });
+    	            $('.footerButtonMyJobs').on('touchstart', function (e) {
+    	                $(this).addClass('footerButtonMyJobs-active');
+    	            });
+    	            $('.footerButtonMyJobs').on('touchend', function (e) {
+    	                $(this).removeClass('footerButtonMyJobs-active');
+    	            });
+    	            $('.footerButtonCreate').on('touchstart', function (e) {
+    	                $(this).addClass('footerButtonCreate-active');
+    	            });
+    	            $('.footerButtonCreate').on('touchend', function (e) {
+    	                $(this).removeClass('footerButtonCreate-active');
+    	            });
+    	            $('.footerButtonLogin').on('touchstart', function (e) {
+    	                $(this).addClass('footerButtonLogin-active');
+    	            });
+    	            $('.footerButtonLogin').on('touchend', function (e) {
+    	                $(this).removeClass('footerButtonLogin-active');
+    	            });
+    	        } else {
+    	            $('.header-button').mousedown(function() {
+    	                $(this).addClass('tappable-active');
+    	            });
+    	            $('.header-button').mouseup(function() {
+    	                $(this).removeClass('tappable-active');
+    	            });
+    	            $('.content-button').mousedown(function () {
+    	                $(this).addClass('tappable-active');
+    	            });
+    	            $('.content-button').mouseup(function () {
+    	                $(this).removeClass('tappable-active');
+    	            });
+    	            $('.footerButtonProfile').mousedown(function () {
+    	                $(this).addClass('footerButtonProfile-active');
+    	            });
+    	            $('.footerButtonProfile').mouseup(function () {
+    	                $(this).removeClass('footerButtonProfile-active');
+    	            });
+    	            $('.footerButtonAllJobs').mousedown(function () {
+    	                $(this).addClass('footerButtonAllJobs-active');
+    	            });
+    	            $('.footerButtonAllJobs').mouseup(function () {
+    	                $(this).removeClass('footerButtonAllJobs-active');
+    	            });
+    	            $('.footerButtonMyJobs').mousedown(function () {
+    	                $(this).addClass('footerButtonMyJobs-active');
+    	            });
+    	            $('.footerButtonMyJobs').mouseup(function () {
+    	                $(this).removeClass('footerButtonMyJobs-active');
+    	            });
+    	            $('.footerButtonCreate').mousedown(function () {
+    	                $(this).addClass('footerButtonCreate-active');
+    	            });
+    	            $('.footerButtonCreate').mouseup(function () {
+    	                $(this).removeClass('footerButtonCreate-active');
+    	            });
+    	            $('.footerButtonLogin').mousedown(function () {
+    	                $(this).addClass('footerButtonLogin-active');
+    	            });
+    	            $('.footerButtonLogin').mouseup(function () {
+    	                $(this).removeClass('footerButtonLogin-active');
+    	            });
+    	        }
+    	        
+    	    }
+
+    	    function onResume() {
+    	        if(globalCurrentDiv == '#divFindJobList') {
+    	            loadJobList(false);
+    	        }
+    	    }
+    	    
+    	    function onDeviceReady() {
+    	        
+    	        document.addEventListener("resume", onResume, false);
+
+    	        bindTouch();
+    
+    	        if (testrun == false) {
+    	            setupCamera(); 
+    	            checkLocation();
+    	        } 
+    	        //else {
+    	        //    var latitude = 56.16390607394954;
+    	        //    var longitude = 10.56884765625;
+    	        //    var zoom = 6;
+    	        //    setupMaps(latitude, longitude, zoom);    
+    	        //}
+
+    	        
+    	        $('#currentContent').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
+    	        $('#currentContent').find('.content').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
+    	        $('#currentContent').find('.scroll').height($(window).height() - $('#currentHead').height() - $('#currentFoot').find('.footer').height());
+
+    	        $('.inputtextbox').each(function() {
+    	            $(this).focusout(function() {
+    	                focusOutInputDiv($(this));
+    	            });
+    	        });
+
+    	        initFastButtons();
+
+    	        if(window.localStorage["MasterLanguage"] != null &&  window.localStorage["MasterLanguage"] != "") {
+    	            MasterLanguage = window.localStorage["MasterLanguage"];
+    	        } else {
+    	            MasterLanguage = "Auto";
+    	        }
+
+    	        $('#inputMyProfileChangeLanguage').val(MasterLanguage);
+
+    	        $('#inputMyProfileChangeLanguage').prev().children().first().empty();
+    	        $.each($('#inputMyProfileChangeLanguage').children(":selected"), function (i, item) {
+    	            $('#inputMyProfileChangeLanguage').prev().children().first().append('<span>' + $(item).text() + '</span>');
+    	        });
+
+    	        Localization.initialize
+                                (
+                                   // Dictionnary
+                                   dictionary_master,
+                                   // Fallback language
+                                   "en"
+                                );
+
+    	        checkPreAuth();
+    	    }
+    	</script>
+        <script>
+            function checkPreAuth() {
+                if (window.localStorage["username"] != undefined && window.localStorage["username"] != "null" && window.localStorage["password"] != undefined && window.localStorage["password"] !="null") {
+                    $("#username").val(window.localStorage["username"]);
+                    $("#password").val(window.localStorage["password"]);
+                    //alert("gemt brugernavn: " + window.localStorage["username"] + ". Gemt password: " + window.localStorage["password"]);
+                    DoLogin(); 
+                } else {
+                    goToFirstPage('#divIntro1');
+                }
+                
+            }
+
+            function DoLogin() {
+                if (spinner == null) {
+                    spinnerStart();
+                }
+                //disable the button so we can't resubmit while we wait
+                $("#btnLogin", this).attr("disabled", "disabled");
+                var u = $("#username").val();
+                var p = $("#password").val();
+                if (u != '' && p != '') {
+                    $.getJSON(server + "/ws/Service1.svc/LoginGetUserType/" + u + "/" + p + "/" + appVersion, function (json) {
+                        if (json.LoginStatus == "ok") {
+                                //store
+                                window.localStorage["username"] = u;
+                                window.localStorage["password"] = p;
+                                window.localStorage["userID"] = parseInt(json.ID);
+                                window.localStorage["userType"] = json.UserType;
+                                if (window.localStorage["userID"] != window.localStorage["lastUserID"]) {
+                                    window.localStorage["lastUserID"] = parseInt(json.ID);
+                                    window.localStorage["currentJob"] = null;
+                                    window.localStorage["reservedJobJson"] = null;
+                                    window.localStorage["currentJobStepNO"] = null;
+                                }
+
+                                loadMyProfile(false);
+                                if (hideSplash == true) {
+                                    goToFirstPage('#divFindJobList');
+                                } else {
+                                    goForward('#divFindJobList');
+                                }
+                            } else {
+                                if (spinner != null) {
+                                    spinnerStop();
+                                }
+                                
+                                navigator.notification.alert(
+                                    _(json.LoginStatus), // message
+                                    function() {
+                                    }, // callback to invoke with index of button pressed
+                                    _('lblLoginFailed'), // title
+                                    _('btnOk')   // buttonLabels
+                                );
+                                if ($.trim($('#currentContent').html()) == '') {
+                                    goToFirstPage('#divLogin');
+                                }
+                            }
+                    }).error(function () {
+                        if (spinner != null) {
+                            spinnerStop();
+                        }
+                        navigator.notification.alert(
+                               _('noConnection'),               // message
+                               function () { }, // callback to invoke with index of button pressed
+                               _('lblLoginFailed'), // title
+                               _('btnOk')   // buttonLabels
+                            );
+                    });
+                }
+                else {
+                    if (spinner != null) {
+                        spinnerStop();
+                    }
+                    navigator.notification.alert(
+                        _('lblBothFieldsRequired'),               // message
+                        function () { }, // callback to invoke with index of button pressed
+                        _('lblLoginFailed'), // title
+                        _('btnOk')   // buttonLabels
+                    );
+                    $("#btnLogin").removeAttr("disabled");
+                }
+                $("#btnLogin").removeAttr("disabled");
+            }
+            
+            function logOut() {
+                window.localStorage["username"] = null;
+                window.localStorage["password"] = null;
+                window.localStorage["userID"] = null;
+                $("#username").val('');
+                $("#password").val('');
+                setTimeout(function() {
+                    goBack('#divLogin');
+                }, animationTime);
+            }
+            
+        </script>
+	</head>
+    <body onLoad="onLoad()">
+            <div id="currentDiv">
+                <span class="fastclick">
+                    <div id="currentHead" style="height: 44px;"></div>
+                </span>
+                <div id="currentContent" ></div><!--style="overflow: hidden;"-->
+                     
+                <span class="fastclick">
+                    <div id="currentFoot" style="height:45px;"></div>
+                </span>
             </div>
-            <p style="text-align: center;">
-                <a href="#" id="calcTip" data-role="button" data-icon="check">Calculate Tip</a>
-            </p>
-            <p class="amounts">
-                <label>Tip Amount</label>
-                <span id="tipAmount">$0.00</span>
-            </p>
-            <p class="amounts totals">
-                <label>Total Amount</label>
-                <span id="totalAmount">$0.00</span>
-            </p>
-        </form>
-    </div>
-</div>
-<div data-role="page" class="" id="settingsPage" data-add-back-btn="true" >
-    <div data-role="header" class="">
-        <a href="#mainPage" class="ui-btn ui-icon-delete ui-btn-icon-left" data-rel="back">Cancel</a>
-        <h1>FasTip - Settings</h1>
-    </div>
-    <div data-role="content" class="">
-        <form>
-            <input type="number" name="tipPercentage" id="tipPercentage" value="" placeholder="Tip Percentage">
-            <p style="text-align: center;">
-                <a href="#" id='saveSettings' data-role="button" data-inline="true" data-icon="check">Save</a>
-            </p>
-        </form>
-    </div>
-</div>
-<script type="text/javascript" src="cordova.js"></script>
-<script src="js/app.js"></script>
-</body>
+            
+        <script>
+            var ResumeOrAbandonJobID;
+
+            // Show a custom confirmation dialog
+            //
+            var tooFarFromjobMsg = ''; //=_('msgTooFarMsgBeforeDist') + 0 + _('msgTooFarMsgAfterDist');
+            function tooFarFromJobMenu(id) {
+                ResumeOrAbandonJobID = id;
+                navigator.notification.confirm(
+                    tooFarFromjobMsg,               // message
+                    tooFarFromJobCallback,          // callback to invoke with index of button pressed
+                    _('msgTooFarTitle'), // title
+                    _('btnOk') + ', ' + _('btnViewCoord')   // buttonLabels
+                );
+            }
+            
+            // process the confirmation dialog result
+            function tooFarFromJobCallback(buttonIndex) {
+                //alert('You selected button ' + buttonIndex);
+                if(buttonIndex == 1) {
+                    //checkDistanceToJob();
+                } else {
+                    coordinatesMenu();
+                }
+            }
+            var coordinatesMsg = ''; // = _('latitude') + ': 5,22222. ' + _('longitude') + ': 52,333333';
+            function coordinatesMenu() {
+                navigator.notification.alert(
+                    coordinatesMsg,               // message
+                    coordinatesCallback,          // callback to invoke with index of button pressed
+                    _('msgCoordTitle'), // title
+                    _('btnOk')   // buttonLabels
+                );
+            }
+
+            // process the confirmation dialog result
+            function coordinatesCallback() {
+                //alert('You selected button ' + buttonIndex);
+                //if(buttonIndex == 1) {
+                //    checkDistanceToJob();
+                //} else {
+                //    abandonJob(ResumeOrAbandonJobID);
+                //}
+            }
+
+            var reserveJobJSON;
+            //var reserveJobMsg = ;
+            function reserveJobMenu(json) {
+                reserveJobJSON = json;
+                navigator.notification.confirm(
+                    _('msgReserveJobMsg'),               // message
+                    reserveJobCallback,          // callback to invoke with index of button pressed
+                    _('msgReserveJobTitle'), // title
+                    _('btnCancel')+','+_('btnReserve')   // buttonLabels
+                );
+            }
+
+            // process the confirmation dialog result
+            function reserveJobCallback(buttonIndex) {
+                //alert('You selected button ' + buttonIndex);
+                if (buttonIndex == 1) {
+                    
+                } else {
+                    reserveJob(reserveJobJSON);
+                }
+            }
+
+            //var reserveJobSuccessMenuMsg = "";//_('msgJobReservedMsg');
+            function reserveJobSuccessMenu() {
+                navigator.notification.confirm(
+                    _('msgJobReservedMsg'),               // message
+                    reserveJobSuccessCallback,          // callback to invoke with index of button pressed
+                    _('msgJobReservedTitle'), // title
+                    _('btnMyJobs')+','+_('btnOk')   // buttonLabels
+                );
+            }
+
+            // process the confirmation dialog result
+            function reserveJobSuccessCallback(buttonIndex) {
+                if (buttonIndex == 1) {
+                    goForwardFooter('#divMyJobs');
+                } else {
+
+                }
+            }
+
+            // Show a custom confirmation dialog
+            //
+            //function resumeOrAbandonJobMenu() {
+            //    navigator.notification.confirm(
+            //        '',               // message
+            //        resumeOrAbandonJobCallback,          // callback to invoke with index of button pressed
+            //        'Forts\u00E6t eller annuller job', // title
+            //        'Forts\u00E6t job,Annuller job'   // buttonLabels
+            //    );
+            //}
+
+            //// process the confirmation dialog result
+            //function resumeOrAbandonJobCallback(buttonIndex) {
+            //    //alert('You selected button ' + buttonIndex);
+            //    if (buttonIndex == 1) {
+            //        resumeJob();
+            //    } else {
+            //        abandonJobConfirmMenu();
+            //    }
+            //}
+            
+
+            
+            // Show a custom confirmation dialog
+            //
+            function uploadFailedMenu() {
+                navigator.notification.confirm(
+                    _('noConnection'),               // message
+                    uploadFailedMenuCallback,          // callback to invoke with index of button pressed
+                    _('msgErrorTitle'), // title
+                    _('btnOk')+','+_('btnTryAgain')   // buttonLabels
+                );
+            }
+
+            // process the confirmation dialog result
+            function uploadFailedMenuCallback(buttonIndex) {
+                //alert('You selected button ' + buttonIndex);
+                if (buttonIndex == 1) {
+                    goToFirstPage(lastStep);
+                } else {
+                    uploadJob();
+                }
+            }
+
+            // Show a custom confirmation dialog
+            //
+            function abandonJobConfirmMenu() {
+                navigator.notification.confirm(
+                    _('msgAbandonJobMsg'),               // message
+                    abandonJobConfirmCallback,          // callback to invoke with index of button pressed
+                    _('msgAbandonJobTitle'), // title
+                    _('btnKeepJob') + ',' + _('btnAbandonJob')   // buttonLabels
+                );
+            }
+
+            // process the confirmation dialog result
+            function abandonJobConfirmCallback(buttonIndex) {
+                //alert('You selected button ' + buttonIndex);
+                if (buttonIndex == 1) {
+                    
+                } else {
+                    abandonJob(ResumeOrAbandonJobID);
+                }
+            }
+            
+
+            // Show a custom confirmation dialog
+            //
+            var missingStepsMsg = '';
+            function missingStepsMenu() {
+                navigator.notification.alert(
+                    missingStepsMsg,               // message
+                    missingStepsCallback,          // callback to invoke with index of button pressed
+                    _('msgMissingStepsTitle'), // title
+                    _('btnReviewSteps')   // buttonLabels
+                );
+            }
+
+            function missingStepsCallback() {
+                goToMissingStep();
+            }
+            
+
+            // Show a custom confirmation dialog
+            //
+            var reserveJobFailedMsg = '';
+            function reserveJobFailedMenu() {
+                navigator.notification.alert(
+                    reserveJobFailedMsg,               // message
+                    reserveJobFailedCallback,          // callback to invoke with index of button pressed
+                    _('msgReservejobFailedTitle'), // title
+                    'Ok'   // buttonLabels
+                );
+            }
+
+            function reserveJobFailedCallback() {
+                //loadJobList(true);
+                //abandonJob();
+            }
+            
+
+            // Show a custom confirmation dialog
+            //
+            var startJobFailedMsg = '';
+            function startJobFailedMenu() {
+                navigator.notification.alert(
+                    startJobFailedMsg,               // message
+                    startJobFailedCallback,          // callback to invoke with index of button pressed
+                    _('msgReservejobFailedTitle'), // title
+                    _('btnOk')   // buttonLabels
+                );
+            }
+
+            function startJobFailedCallback() {
+                //loadJobList(true);
+            }
+            
+
+            // Show a custom confirmation dialog
+            //
+            function changePasswordWinMenu() {
+                navigator.notification.alert(
+                    _('msgPasswordChangeSuccessMsg'),               // message
+                    changePasswordWinCallback,          // callback to invoke with index of button pressed
+                    _('msgPasswordChangeSuccessTitle'), // title
+                    _('btnOk')   // buttonLabels
+                );
+            }
+
+            function changePasswordWinCallback() {
+                goForward('#divEditProfile');
+            }
+            
+        </script>
+        <!--Menues start-->
+        <div id="spinnerBG" style="display:none; width:100%; top:0px; height:100%; position: absolute; background-color: rgba(0,0,0,0.8); z-index:1;">
+        </div>
+        <div id="divMenuBG" style="display:none; width:100%; top:0px; height:100%; position: absolute; background-color: rgba(0,0,0,0.8); z-index:1;">
+        </div>
+
+        <div id="divProductImage" class="menu menu-hidden" style="top:10px;"> <!--top:50%;-->
+            <!--<div style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">-->
+            <div class="menu-inner" style="margin: 10px; position: absolute;  width:300px; background-color: white; -moz-border-radius: 5px; border-radius: 5px;"> <!--bottom:0px; --> <!--top:-50%; -->
+                <img style="width: 30px; position: absolute; right: 0; top: 0;"onclick="hideProductImage();" src="assets/img/close.png" />
+                <input type="hidden" id="ProductImageAnswerID"/>
+                <input type="hidden" id="ProductImageStepID"/>
+                <p style="font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 0px" class="l10n-productImageMsg">Kan du finde denne vare i butikken?</p>
+                <img id="ProductImageImg" src="" style="width:240px; height:240px; background-image:url('assets/img/productplaceholder.jpg'); background-size:240px 240px; "/>
+                
+              
+                <div style="background-color: #F7F7F7; padding:10px;">
+                   <p style="font-size: 20px; margin-bottom: 0;" id="ProductImageProductName">Merrild Formalet Mørkristet kaffe (Mørk 304) 500g</p>
+                </div>
+                <div>
+                    <div style="margin:5px auto 5px auto; width:270px;">
+                        <img style="float:left; width:20px; margin-top: 3px; margin-right: 10px;" src="assets/img/barcode.png" /> <p style="float:left; font-size: 14px; margin-bottom: 0" id="ProductImageBarCodeDiv">Stregkodenummer: <span style="font-size: 16px; color:blue;" id="ProductImageBarCode">34567890987</span></p>
+                        <br style=" clear:both;"/>
+                    </div>
+                </div>
+                <div style="background-color: #F7F7F7; border-bottom-right-radius: 5px; border-bottom-left-radius:5px; "> <!--position: absolute; bottom: 0px; width: 100%;-->
+                    <div style="width: 210px; margin:0 auto 0 auto; padding:10px 0 10px 0;">
+                        <button style="float:left; width:100px;" onclick="productImageSetAnswer(true);" class="btn btn-large btn-block btn-success l10n-yesCaps" type="button">JA</button>    
+                        <button style="float:left; width:100px; margin: 0 0 0 10px;" onclick="productImageSetAnswer(false);" class="btn btn-large btn-block btn-danger l10n-noCaps" type="button">NEJ</button>
+                        <br style=" clear:both;"/>
+                    </div>
+                </div>
+                <!--<button style="margin:20px 10px 10px 10px; width:260px;" onclick="hideProductImage();" class="btn btn-large btn-block btn-success" type="button">Tilbage</button>-->
+            </div>
+        </div> 
+        
+        <div id="divResumeOrAbandonJobMenu" class="menu menu-hidden">
+            <!--<div style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">-->
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px;">
+                <button style="margin:10px 10px 10px 10px; width:260px;" onclick="hideResumeOrAbandonJobMenu(); resumeJob(ResumeOrAbandonJobID);" class="btn btn-large btn-block btn-success l10n-btnContinueJob" type="button">Fortsæt job</button>    
+                <button style="margin:0 10px 10px 10px; width:260px;" onclick="hideResumeOrAbandonJobMenu(); if (window.localStorage['userType'] == 0) {abandonJobConfirmMenu();} else { abandonJob(ResumeOrAbandonJobID); }" class="btn btn-large btn-block btn-danger l10n-btnAbandonJob" type="button">Annuller job</button>
+                <button style="margin:0 10px 10px 10px; width:260px;" onclick="hideResumeOrAbandonJobMenu();" class="btn btn-large btn-block l10n-btnBack" type="button">Tilbage</button>
+            </div>
+        </div> 
+            
+        <!--<div id="divAbandonJobConfirmMenu" class="menu menu-hidden">
+            <div style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+           
+                <h3>Er du sikker?</h3>
+                <h4 style="margin: 0px 10px 0px 10px">Hvis du anullerer jobbet kan du ikke længere arbejde på det, og det vil blive tilgængeligt for andre jobwalkere</h4>
+                    
+                <button style="margin:10px 10px 10px 10px; width:260px;" onclick="hideAbandonJobConfirmMenu();" class="btn btn-large btn-block btn-success" type="button">Behold job</button>    
+                <button style="margin:0 10px 10px 10px; width:260px;" onclick="abandonJob(ResumeOrAbandonJobID);" class="btn btn-large btn-block btn-danger" type="button">Annullér job</button>
+            </div>
+        </div> -->
+        
+            <div id="CommitMissingSteps" class="menu menu-hidden">
+                <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+                    <h3 class="l10n-msgMissingStepsTitle">Du mangler at udføre nedenstående trin</h3>
+                    <div id="DivCommitMissingSteps" style="margin: 0 10px 20px 10px;" class="l10n-msgBackToJobList">Du bliver sendt tilbage til joblisten</div>
+                    
+                    <button style="margin:0 10px 10px 10px; width:260px;" onclick="hideCommitMenu(); goToMissingStep();" class="btn btn-large btn-block btn-inverse l10n-btnReviewSteps" type="button">Gennemse trin</button>
+                </div>
+            </div> 
+
+        <div id="ReserveJobFailed" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+                <h3 class="l10n-msgErrorTitle">Der skete en fejl :(</h3>
+                <h4 class="l10n-msgJobReservedToAnother">Opgaven er desværre reserveret til en anden jobwalker</h4>
+                    
+                <button style="margin:0 10px 10px 10px; width:260px;" onclick="$('#StepDivs').empty(); hideCommitMenu(); goForward('#divFindJobList');" class="btn btn-large btn-block btn-inverse l10n-btnBackToJoblist" type="button">Tilbage til joblisten</button>
+            </div>
+        </div>
+        
+        <div id="divResetPasswordMenu" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+                <h3 class="l10n-msgResetPasswordMsg">Hvis du har glemt dit kodeord, kan du resette det ved at skrive din email nedenfor</h3>
+                <input id="divResetPasswordMenuEmail" class=" l10n-ph-enterEmail" type="text" placeholder="" style="margin:0 10px 10px 10px; float:left; width:260px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ padding:0px 0px 0px 5px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                <button style="margin:0 10px 10px 10px; width:260px;" onclick="resetPassword();" class="btn btn-large btn-block btn-inverse l10n-btnSendNewPassword" type="button">Send nyt password</button>
+                <button style="margin:0 10px 10px 10px; width:260px;" onclick="hidedivResetPasswordMenu();" class="btn btn-large btn-block l10n-btnCancel" type="button">Annuller</button>
+            </div>
+        </div> 
+        
+        
+        <div id="divChangePasswordWin" class="menu menu-hidden">
+                <div class="menu-inner" style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: relative; width:260px; background-color: white; border-radius: 5px;">
+                    <div id="divChangePasswordWintext" class="l10n-msgPasswordChangeSuccessMsg">Din adgangskode er opdateret</div>
+                    <button style="margin-bottom: 10px;" onclick="hideChangePassword(); goForward('#divEditProfile');" class="btn btn-large btn-block btn-success l10n-btnOk" type="button">Ok</button>
+                </div>
+            </div>
+            
+            <div id="divChangePasswordFail" class="menu menu-hidden">
+                <div class="menu-inner" style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: relative; width:260px; background-color: white; border-radius: 5px;">
+                    <div id="divChangePasswordFailtext" class="l10n-msgPasswordChangeFailMsg">Din adgangskode blev ikke opdateret</div>
+                    <button style="margin-bottom: 10px;" onclick="hideChangePassword()" class="btn btn-large btn-block btn-success l10n-btnOk" type="button">Ok</button>
+                </div>
+            </div>
+
+
+        <div id="CommitMenu" class="menu menu-hidden">
+                <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+                    <div id="CommitMenuContent" style="width:100%;">
+                        <h3 class="l10n-msgCommitTitle">Afslutning</h3>
+                        <p style="font-family: Arial; font-weight: bold; color: darkgray; margin:0 10px 0 10px;" class="l10n-msgCommitMsg">
+                            Vil du uploade opgaven nu?
+                        </p>
+                                
+                        <button style="margin:0 10px 5px 10px; width:260px;" onclick="finishJob();" class="btn btn-large btn-block btn-success l10n-sendAnswers" type="button">Send besvarelse</button><!--commitJob()-->
+                        <button style="margin:0 10px 15px 10px; width:260px;" onclick="hideCommitMenu()" class="btn btn-large btn-block l10n-btnBack" type="button">Tilbage</button> <!---->
+                    </div>
+                    <div id="CommitMenuUploading" style="display:none; width:100%; margin:0 10px 0 10px;">
+                        <p style="font-family: Arial; font-weight: bold; color: darkgray; margin-top: 10px;" class="l10n-msgCommitUploading">
+                            Uploader...
+                        </p>
+                        <div class="progress progress-striped active" style="width:260px;">
+                            <div class="bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div id="CommitComplete" class="menu menu-hidden">
+                <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+                    <h3><span class="l10n-msgCommitCompleteTitleBeforeName">Tak</span> <span id="CommitCompleteName"></span><span class="l10n-msgCommitCompleteTitleAfterName">!</span></h3>
+                    <div id="CommitCompleteText">
+                        
+                    </div>
+                    <!--<p style="font-family: Arial; font-weight: bold; color: darkgray; margin:0 10px 10px 10px;">
+                        
+                    </p>-->
+                                
+                <!--    <p style="margin-bottom:10px; font-family: Arial; font-weight: bold; color: red; margin:0 10px 10px 10px;">Du har endnu ikke udfyldt dine PayPal oplysninger. Dine penge kan ikke blive udbetalt før dette er gjort</p>
+                    <button style="margin:0 10px 20px 10px; width:260px;" onclick="commitJob()" class="btn btn-large btn-block btn-success" type="button">Rediger PayPal indstillinger</button>-->
+                    <button style="margin:0 10px 10px 10px; width:260px;" onclick="hideCommitMenu(); goForward('#divFindJobList');" class="btn btn-large btn-block btn-success l10n-btnOk" type="button">Ok</button>
+                </div>
+            </div> 
+            <div id="CommitFailed" class="menu menu-hidden">
+                <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px; background-color: white; border-radius: 5px;">
+                    <h3 class="l10n-msgErrorTitle">Der skete en fejl :(</h3>
+                    <h4 class="l10n-msgBackToJobList">Du bliver sendt tilbage til joblisten</h4>
+                    
+                    <button style="margin:0 10px 10px 10px; width:260px;" onclick="uploadJob();" class="btn btn-large btn-block l10n-btnTryAgain" type="button">Prøv igen</button>    
+                    <button style="margin:0 10px 10px 10px; width:260px;" onclick="$('#StepDivs').empty(); hideCommitMenu(); goForward('#divFindJobList');" class="btn btn-large btn-block btn-inverse l10n-btnBackToJoblist" type="button">Tilbage til joblisten</button>
+                </div>
+            </div> 
+           
+        
+        
+        
+
+        <div id="divStepPhotoAddMenu" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px;">
+                <button style="margin-bottom: 10px;" class="btn btn-large btn-block btn-success l10n-btnTakePhoto" type="button" onclick="getCameraPhoto();">Tag billede</button>
+                <button style="margin-bottom: 10px;" class="btn btn-large btn-block l10n-btnChooseFromLibrary" type="button" onclick="getLibraryPhoto();">Vælg fra bibliotek</button>
+                <button id="btnDeletePhoto" style="margin-bottom: 20px;" class="btn btn-large btn-block btn-danger l10n-btnDeletePhoto" type="button" onclick="deletePhoto()">Slet billede</button>
+                <button style="margin-bottom: 20px;" onclick="hidePhotoAdd()" class="btn btn-large btn-block btn-inverse l10n-btnCancel" type="button">Annuller</button> <!---->
+            </div>
+        </div> 
+        <div id="divStepPhotoDeleteMenu"  class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; bottom:0px; position: absolute; width:280px;">
+                <button style="margin-bottom: 20px;" class="btn btn-large btn-block btn-danger l10n-btnDeletePhoto" type="button">Slet billede</button>
+                <button style="margin-bottom: 20px;" onclick="hidePhotoDelete()" class="btn btn-large btn-block btn-inverse l10n-btnCancel" type="button">Annuller</button> <!---->
+            </div>
+        </div>  
+
+        <div id="divConfirmTransferMenu" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: relative; width:260px; background-color: white; border-radius: 5px;">
+                <div class="l10n-msgTransferConfirmMsg">Overfør beløbet ved at skrive din Jobwalk adgangskode</div>
+                <input id="txtTransferPW" type="password" class=" l10n-ph-enterPassword" placeholder="" style="margin-bottom:10px; float:left; width:260px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ padding:0px 0px 0px 5px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                <button style="margin-bottom: 10px;" onclick="ConfirmTransfer()" class="btn btn-large btn-block btn-success l10n-btnTransfer" type="button">Overfør</button>
+                <button style="margin-bottom: 20px;" onclick="hideConfirmTransfer()" class="btn btn-large btn-block btn-inverse l10n-btnCancel" type="button">Annuller</button>
+            </div>
+        </div>
+           
+        <div id="divConfirmTransferDone" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: absolute; width:260px; background-color: white; border-radius: 5px;">
+                <h3><span class="l10n-msgTransferCompleteTitleBeforeName"></span> <span id="divConfirmTransferDoneName">Sebastian</span> <span class="msgTransferCompleteTitleAfterName">!</span></h3>
+                <h4><span class="l10n-msgTransferCompleteBeforeAmount"></span><span id="divConfirmTransferDoneAmount">150kr.</span><span class="l10n-msgTransferCompleteAfterAmount"></span></h4>
+                <p style="font-family: Arial; font-weight: bold; color: darkgray;" class="l10n-msgTransferCompleteTransferTime">Pengene kommer ind på din bankkonto i løbet af 24 timer.</p>
+                <button style="margin-bottom: 20px;" onclick="hideConfirmTransfer()" class="btn btn-large btn-block btn-success l10n-btnOk" type="button">Ok</button>
+            </div>
+        </div>
+            
+        <div id="divConfirmUpdateUserMenu" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: relative; width:260px; background-color: white; border-radius: 5px;">
+                <div id="divConfirmUpdateUserMenuTitle" class="l10n-msgConfirmUpdateUserTitle">Bekræft opdatering af oplysninger</div>
+                <input id="txtUpdateUserPW" type="password" class=" l10n-ph-enterPassword" placeholder="" style="margin-bottom:10px; float:left; width:260px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ padding:0 0 0 10px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                <button style="margin-bottom: 10px;" onclick="UpdateUser();" class="btn btn-large btn-block btn-success l10n-btnOk" type="button">Ok</button>
+                <button style="margin-bottom: 20px;" onclick="hideConfirmUpdateUser();" class="btn btn-large btn-block btn-inverse l10n-btnCancel" type="button">Annuller</button>
+            </div>
+        </div>
+        
+        <div id="divCreateUserChooseLanguage" class="menu menu-hidden">
+            <div class="menu-inner" style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: relative; width:260px; background-color: white; border-radius: 5px;">
+                <div id="div3" class="l10n-msgCreateUserChooseContry">Vælg hvilket land du vil udføre opgaver i</div>
+                <select id="ddlCreateUserChooseLanguage" style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;">
+                    <option value="da" selected="selected">Danmark</option>
+                    <option value="no">Norge</option>
+                    <option value="se">Sverige</option>
+                </select>
+                <!--<input  style="margin-bottom:10px; float:left; width:260px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ padding:0 0 0 10px; height:43px; vertical-align: middle; font-size: 18px;"/>-->
+                <button style="margin-bottom: 10px;" onclick="hideCreateUserChooseLanguage(); loadCreateUserData();" class="btn btn-large btn-block btn-success l10n-btnOk" type="button">Ok</button>
+                <button style="margin-bottom: 20px;" onclick="hideCreateUserChooseLanguage();" class="btn btn-large btn-block btn-inverse l10n-btnCancel" type="button">Annuller</button>
+            </div>
+        </div>
+           
+        <!--<div id="divdebug" class="menu transition menu-visible">
+                <div style="margin: 0 20px 10px 20px; padding:10px; bottom:0px; position: absolute; width:260px; background-color: white; border-radius: 5px;">
+                    <div id="lblDebug3" style="">Bekræft opdatering af oplysninger</div>
+                    </div>
+            </div>-->
+        
+            <!--Menues end-->
+        <div id="hiddenDivs" style="display:none;">
+            <!--Intro-->
+            <div class="" id="divIntro1">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1></h1>
+                        <!--<a class="header-button header-button-left"><button>Start</button></a>-->
+                        <a onclick="goForward('#divIntro2')" class="header-button header-button-icon header-button-right searche" id="view-home-refresh"><button class=" l10n-btnMor">Mere</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right" style="">
+                    <div class="scroll intro" style="text-align: center;">
+                        <img src="assets/img/intro1.png" style="width:100%"/>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade intro"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <a class="footerButtonLogin" onclick="goForwardFooter('#divLogin')"><button></button></a>
+                            <a class="footerButtonCreate" onclick="showCreateUserChooseLanguage();"><button></button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="" id="divIntro2">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1></h1>
+                        <a onclick="goBack('#divIntro1')" class="header-button header-button-left header-back-buttons"><button class=" l10n-btnPreviou">Forrige</button></a>
+                        <a onclick="goForward('#divIntro3')" class="header-button header-button-icon header-button-right search" id="A1"><button class=" l10n-btnMore">Mere</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll intro" style="text-align: center;">
+                        <img src="assets/img/intro2.png" style="width:100%" />
+                    </div>
+                </div>   
+                <div class="foot">
+                    <!--<div class="footerFade intro"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <a class="footerButtonLogin" onclick="goForwardFooter('#divLogin')"><button></button></a>
+                            <a class="footerButtonCreate" onclick="showCreateUserChooseLanguage();"><button></button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="" id="divIntro3">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1></h1>
+                        <a onclick="goBack('#divIntro2')" class="header-button header-button-left header-back-button"><button class=" l10n-btnPrevious">Forrige</button></a>
+                        <!--<a onclick="goForward('#divCreateProfile')" class="header-button button-green header-button-icon header-button-right search" id="A2"><button>Find job</button></a>-->
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll intro" style="text-align: center;">
+                        <img src="assets/img/intro3.png" style="width:100%" />
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade intro"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <a class="footerButtonLogin" onclick="goForwardFooter('#divLogin')"><button></button></a>
+                            <a class="footerButtonCreate" onclick="showCreateUserChooseLanguage();"><button></button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="" id="divLogin">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-login">Login</h1>
+                        <a onclick="goBack('#divIntro1')" class="header-button header-button-left header-back-button"><button class="l10n-btnBack">Tilbage</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px; width:100%;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-form" style="background-color: #F7F7F7; margin:20px 15px 20px 15px; padding-left: 0px !important; padding-right:0px !important;">
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <!--<div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Email: 
+                                    </div>-->
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="username" class="inputtextbox l10n-ph-email" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                   <!-- <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Password: 
+                                    </div>-->
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px">
+                                        <input id="password" class="inputtextbox l10n-ph-password" type="password" placeholder=""
+                                            style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                       <div style="margin-left:9px; margin-right:17px;">
+                           <a onclick="DoLogin()" class="content-button button-green" id="btnLogin">
+                               <button style="width:100%; height:40px; font-size:16px;" class="l10n-login">Log ind</button>
+                           </a>
+                        </div>
+                        <br/>
+                        <br/>
+                        <!--<a onclick="showdivResetPasswordMenu()" class="content-button " style="margin-left:10px;" id="A10">
+                                <button style="width:290px; height:40px; font-size:16px;">Glemt kodeord?</button>
+                            </a>-->
+                        <div style="text-align:center;">
+                            <a onclick="showdivResetPasswordMenu()" style="text-decoration: underline;font-weight: normal;color: #666;" class="ui-link l10n-forgotYourPassword">
+                                Har du glemt din adgangskode?
+                            </a>
+                        </div>
+                        <!--<br/>
+                        <br/>
+                        <div style="width:100%; text-align: center;">eller</div>
+                        <br/>
+                        <a onclick="goForward('#divCreateProfile')" class="content-button button-green" style="margin-left:10px;" id="A13">
+                            <button style="width:290px; height:40px; font-size:16px;">Opret Bruger</button>
+                        </a>-->
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                            
+                    </div>
+                </div> 
+            </div>
+
+            <div class="" id="divCreateProfile">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-createProfile">Opret profil</h1>
+                        <a onclick="goBack('#divIntro1')" class="header-button header-button-left header-back-button"><button class="l10n-btnBack">Tilbage</button></a>
+                        <!--<a onclick="goForward('#divCreateProfile','#divFindJobList')" class="header-button button-green header-button-icon header-button-right search" id="A3"><button>Find job</button></a>-->
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px; width:100%;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-form" style="background-color: #F7F7F7; margin:20px 15px 20px 15px; padding-left: 0px !important; padding-right:0px !important;">
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                              <!--      <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Fornavn: 
+                                    </div>-->
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputNewUserFirstName" class="inputtextbox l10n-ph-firstName" type="text" placeholder=""
+                                               style="float:left; outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                    <!--<div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Efternavn: 
+                                    </div>-->
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                     <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputNewUserLastName" class="inputtextbox l10n-ph-lastName" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div style="border:1px solid #ababab; width:100%;">
+                                   <!-- <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Postnummer: 
+                                    </div>-->
+                                    
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <!--<select id="inputNewUserZipCodes"  style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;">
+                                                <option value="volvo">Volvo</option>
+                                                <option value="saab">Saab</option>
+                                                <option value="opel">Opel</option>
+                                                <option value="audi">Audi</option>
+                                            </select>-->
+                                        
+                                        <div id="inputNewUserZipCodes" style="max-height:150px; border:1px solid black; overflow:scroll;">
+<!--                                            <input type="checkbox" name="option1" value="Milk"> Milk<br>
+                                            <input type="checkbox" value="Milk"> Milk<br>
+                                            <input type="checkbox" name="option1" value="Milk"> Milk<br>
+                                            <input type="checkbox" name="option1" value="Milk"> Milk<br>
+                                            <input type="checkbox" name="option1" value="Milk"> Milk<br>-->
+                                        </div>
+                                      
+                                        <div style="font-family: Helvetica,Arial,sans-serif; font-weight: bold; font-size: 14px; margin-bottom: 10px;" class="l10n-chooseZipCodes">*Vælg de postnumre du vil udføre opgaver i</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                    <!--<div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Email: 
+                                    </div>-->
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                     <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputNewUserEmail" class="inputtextbox l10n-ph-email" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                    <!--<div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                            Password: 
+                                        </div>-->
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputNewUserPassword" class="inputtextbox l10n-ph-password" type="password" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div style="border:1px solid #ababab; width:100%">
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <select id="inputNewUserCountryCodes" style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;">
+
+                                        </select>
+                                        <div style="font-family: Helvetica,Arial,sans-serif; font-weight: bold; font-size: 14px; margin-bottom: 10px;" class="l10n-chooseCountryCode">*Vælg din landekode</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        <span class="l10n-phoneNumber">Telefonnummer</span>: 
+                                    </div>
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputNewUserPhoneNumber" class="inputtextbox l10n-ph-phoneNumber" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                       
+                        <a onclick="CreateUser()" class="content-button button-green" style="margin-left:10px;" id="btnCreateUser">
+                            <button style="width:290px; height:40px; font-size:16px;" class="l10n-btnCreate">Opret</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+
+                    </div>
+                </div>
+            </div>
+
+            <!--findjob-->
+            <div class="" id="divFindJobMap" >
+                <div class="head">
+                    <div class="header header-blue" style="text-align:center;">
+                        <a onclick="goBack('#divCreateProfile')" class="header-button header-button-left header-back-button l10n-btnPrevious"><button>Forrige</button></a>
+                        <div class="btn-group">
+                            <button class="btn btn-primary l10n-btnMap" style="width:100px; margin-top:-4px; border-radius: 4px 0 0 4px;">Kort</button>
+                            <a onclick="goForward('#divFindJobList')"><button class="btn l10n-btnList" style="width:100px; margin-top:-4px; border-radius: 0 4px 4px 0;">Liste</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="text-align: center; height:100%; width:100%; top:44px;">
+                        <div id="map_canvas" style="width:320px; height:100%"></div>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goForwardFooter('#divMyProfile')"></div>
+                            <div class="footerButtonAllJobs footerButtonActive" style=""></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="" id="divFindJobList">
+                <div class="head">
+                    <div class="header header-blue" style="text-align:center;">
+                        <!--<div class="btn-group">
+                                <a onclick="goBack('#divFindJobList','#divFindJobMap')"><button class="btn" style="width:100px; margin-top:-4px; border-radius: 4px 0 0 4px;">Kort</button></a> 
+                                <button class="btn btn-primary" style="width:100px; margin-top:-4px; border-radius: 0 4px 4px 0;">Liste</button>
+                            </div>-->
+                        <!--<a onclick="loadJobList(false);" class="header-button button-green header-button-icon" style="position:relative;" id="A12">
+                                <button class="l10n-btnUpdateListAndDist">Opdater Liste/Afstand</button>
+                            </a>-->
+                        <h1 class="l10n-availableJobs">Ledige job</h1>
+                        <a onclick="loadJobList(false);" class="header-button header-button-icon header-button-right" id="A12">
+                            <button>
+                                <img src="assets/css/images/refresh-icon.png" style="height: 20px;" />
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul id="divJobListJobs" class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-bottom: 0px; padding-right:0px !important;">
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goToMyProfile(this);"></div>
+                            <div class="footerButtonAllJobs footerButtonActive" style=""></div>
+                            <div class="footerButtonMyJobs"  onclick="goToMyJobs(this);"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div> 
+            </div>  
+
+            <!--job-->
+            <div class="" id="divViewJobDetails">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-jobDetails">Job detaljer</h1>
+                        <a onclick="loadJobList(true);" class="header-button header-button-left header-back-button"><button class="l10n-btnList">Liste</button></a>
+                        <!--onclick="goForward('#divViewJobDetails','#divStepYesNo')"-->
+                        <a class="header-button button-green header-button-icon header-button-right" id="A14"><button class="l10n-btnStart">Start</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <div style="text-shadow: none; text-align: left;">
+                            <div style=" background-image: -webkit-linear-gradient(top, #444, #222); float:right;width:80px; height:80px;text-align: center;">
+                                <div style="float:right; color: white; margin-right:15px; font-size: 10px;margin-top:35px;">KR.</div>
+                                <div style="float:right; color: white; font-size: 20px; margin-top:31px;" id="jobDetailsPaymentAmount"></div>
+                                <br style="clear:both;"/>
+                            </div>
+                            <div style="background-image: -webkit-linear-gradient(top, white, #aaaaaa); /*float:left;width:230px;*/ height:70px; padding: 5px 0 5px 10px;" >
+                                <div style="/*float:left;*/ /*margin-top:10px;*/ /*width:100%;*/">
+                                    <div style="font-weight: bold; float: left;" id="jobDetailsShopName">netto</div>
+                                    <div style="float:right;">
+                                        <div style="float:right; font-size: 10px; line-height: 10px; margin-right:10px;">20<span id="jobDetailsDistance"></span>km</div>
+                                        <i style="float:right; margin:0 5px 0 0" class="icon-flag"></i>
+                                    </div><br /><!--style="clear:both;"--><div style="font-size: 12px;" id="jobDetailsAddress">dsfg 2435, 6542 sdfhsh</div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <br style="clear:both;"/>
+                        </div>
+                        <div style=" text-align: left; padding: 10px;">
+                            <h4 style="margin-bottom: 0px;" id="jobDetailsTitel"></h4>
+                            <div style="font-size: 10px;" id="jobDetailsStartDateDiv">
+                                <span class="l10n-lblJobStartDate">Opgaven kan startes fra </span><span id="jobDetailsStartDate"></span>
+                            </div>
+                            <div style="font-size: 10px; margin-bottom:10px;">
+                                <span class="l10n-lblJobDeadline">Opgaven skal være løst senest </span><span id="jobDetailsDeadline"></span>
+                            </div>
+                            <p id="jobDetailsDescription">
+                                dfgh
+                                <br/>
+                                dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>dfgh
+                                <br/>
+                            </p>
+
+                        </div>
+                        <div style="padding-bottom:10px; width: 100%; text-align: center;">
+                            <a onclick="" style="display: inline-block;"class="content-button button-green" id="A15">
+                                <button style="width:300px; height:40px; font-size:16px; margin-left: 5px;" class="l10n-btnStartJob">Start opgaven</button>
+                            </a>
+                        </div>
+                        <div class="jobText" style="color: #7f7f7f; font-size: 10px; margin:0 0 20px 10px; line-height: 10px; text-align: left;">(Job-ID: <span id="jobDetailsID"></span>)</div>
+
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goForwardFooter('#divMyProfile')"></div>
+                            <div class="footerButtonAllJobs footerButtonActive" style=""></div>
+                            <div class="footerButtonMyJobs"  onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="" id="divStepYesNo">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1></h1>
+                        <a class="header-button header-button-left header-back-button"><button class="l10n-btnDescription">Beskrivelse</button></a> <!--onclick="goBack('#divStepYesNo','#divViewJobDetails')"-->
+                        <!--<a class="header-button button-green header-button-icon header-button-right search" id="A6"><button>Næste</button></a>-->
+                        <a class="header-button header-button-right header-forward-button" id="A6"><button class="l10n-btnNext">Næste</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                            
+                            
+                        <div style="width:100%; text-align: left; background-color: black; color:white;padding:5px 0 5px 0"><span style="margin-left:10px; text-shadow: none;"></span></div>
+                        <div style="padding:10px; background-color: white;">
+                    
+                            <h4 style="text-align: left; margin:10px 0 0 0;" class="l10n-question">Spørgsmål</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="question"></p>
+                            <h4 style="text-align: left; margin-bottom: 0px;" class="l10n-instructions" >Instruktioner</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="instructions"></p>
+                            <ul class="nav nav-tabs nav-stacked" style="background-color: #F7F7F7;">
+                                <li>
+                                    <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customRadio(this);" >
+                                        <div class="jobText divStepYesNoYes l10n-yes" style="line-height:27px; color:black; float:left;">Ja</div>
+                                        <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customRadio(this);" >
+                                        <div class="jobText divStepYesNoNo l10n-no" style="line-height:27px; color:black; float:left;">Nej</div>
+                                        <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <br style="clear: both;" />
+                           <!-- <ul class="nav nav-tabs nav-stacked chkNA" style="background-color: #F7F7F7; margin-top: 30px;">
+                                <li>
+                                    <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                        <div class="jobText" style="line-height:27px; color:black; float:left;">Klik her hvis varen ikke findes</div>
+                                        <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                    </a>
+                                </li>
+                            </ul>-->
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" ></div> <!--onclick="goForwardFooter('#divMyProfile')"></div>-->
+                            <div class="footerButtonAllJobs" ></div> <!--onclick="goForwardFooter('#divFindJobList')"></div>-->
+                            <div class="footerButtonMyJobs"  ></div> <!--onclick="goForwardFooter('#divMyJobs')"></div>-->
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="" id="divStepText">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1>Trin 2 af 5</h1>
+                        <!--onclick="goBack('#divStepText','#divStepYesNo')"-->
+                        <a class="header-button header-button-left header-back-button" onclick=""><button class="l10n-btnBack">Tilbage</button></a>
+                        <!--onclick="goForward('#divStepText','#divStepMultipleAnswers')"-->
+                        <a class="header-button header-button-right header-forward-button" onclick="" id="A7"><button class="l10n-btnNext">Næste</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <div style="width:100%; text-align: left; background-color: black; color:white;padding:5px 0 5px 0"><span style="margin-left:10px; text-shadow: none;" class="stepNO"></span></div>
+                        <div style="padding:10px; background-color: white;">
+                    
+                            <h4 style="text-align: left; margin:10px 0 0 0;" class="stepQuestionHeader l10n-question">Spørgsmål</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="question"></p>
+                            <h4 style="text-align: left; margin-bottom: 0px;" class="stepInstructionsHeader l10n-instructions" >Instruktioner</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="instructions"></p>                     
+                            
+                            <textarea name="textarea" style="text-align: -webkit-auto; height:110px;" class="textAnswer"></textarea>
+                            
+                            <ul class="nav nav-tabs nav-stacked chkNA" style="background-color: #F7F7F7; margin-top: 30px;">
+                                <li>
+                                    <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                        <div class="jobText l10n-productCouldNotBeFound" style="line-height:27px; color:black; float:left;">Klik her hvis varen ikke findes</div>
+                                        <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <br style="clear: both;"/>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" ></div> <!--onclick="goForwardFooter('#divMyProfile')"></div>-->
+                            <div class="footerButtonAllJobs" ></div> <!--onclick="goForwardFooter('#divFindJobList')"></div>-->
+                            <div class="footerButtonMyJobs"  ></div> <!--onclick="goForwardFooter('#divMyJobs')"></div>-->
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="" id="divStepComment">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-comments">Kommentarer</h1>
+                        <!--onclick="goBack('#divStepText','#divStepYesNo')"-->
+                        <a class="header-button header-button-left header-back-button" onclick=""><button class="l10n-btnBack">Tilbage</button></a>
+                        <!--onclick="goForward('#divStepText','#divStepMultipleAnswers')"-->
+                        <!--<a class="header-button button-green header-button-icon header-button-right" onclick="" id="A2"><button>Næste</button></a>-->
+                        <a class="header-button header-button-right header-forward-button" id="A9"><button class="l10n-btnNext">Næste</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <div style="width:100%; text-align: left; background-color: black; color:white;padding:5px 0 5px 0">
+                            <span style="margin-left:10px; text-shadow: none;" class="stepNO"></span>
+                        </div>
+                        <div style="padding:10px; background-color: white;">
+                    
+                            <h4 style="text-align: left; margin:10px 0 0 0;" class="stepQuestionHeader l10n-commentsOnTheJob">Kommentarer til opgaven</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="question"></p>
+                            <h4 style="text-align: left; margin-bottom: 0px;" class="stepInstructionsHeader l10n-support" >Support</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="instructions"></p>                     
+
+                            <div style="height:200px;">
+                                <textarea name="textarea" style="text-align: -webkit-auto; height:110px;" class="textAnswer"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" ></div> <!--onclick="goForwardFooter('#divMyProfile')"></div>-->
+                            <div class="footerButtonAllJobs" ></div> <!--onclick="goForwardFooter('#divFindJobList')"></div>-->
+                            <div class="footerButtonMyJobs"  ></div> <!--onclick="goForwardFooter('#divMyJobs')"></div>-->
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+             <div class="" id="divStepMultipleAnswers">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1>Trin 3 af 5</h1>
+                        <!--onclick="goBack('#divStepMultipleAnswers','#divStepText')"-->
+                        <a class="header-button header-button-left header-back-button"><button class="l10n-btnBack">Tilbage</button></a>
+                        <!--onclick="goForward('#divStepMultipleAnswers','#divStepPhoto')"-->
+                        <a class="header-button header-button-right header-forward-button" id="A5"><button class="l10n-btnNext">Næste</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <input type="hidden" class="stepID" />
+                        <div style="width:100%; text-align: left; background-color: black; color:white;padding:5px 0 5px 0">
+                            <span style="margin-left:10px; text-shadow: none;" class="stepNO">Løs trin 4</span>
+                        </div>
+                        <div style="padding:10px; background-color: white; overflow: scroll;">
+                            <h4 style="text-align: left; margin:10px 0 0 0;" class="stepQuestionHeader l10n-question">Spørgsmål:</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="question"></p>
+                            <h4 style="text-align: left; margin-bottom: 0px;" class="stepInstructionsHeader l10n-instructions" >Instruktioner</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;"  class="instructions"></p>
+
+                            <ul class="nav nav-tabs nav-stacked answersUL" style="background-color: #F7F7F7;">
+                                <!--<li>
+                                        <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                            <div class="jobText" style="line-height:27px; color:black; float:left;">Gillete Fusion 100</div>
+                                            <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                            <div class="jobText" style="line-height:27px; color:black; float:left;">Gillete Fusion 200</div>
+                                            <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                        </a>
+                                    </li>
+                                    
+                                    <li>
+                                        <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                            <div class="jobText" style="line-height:27px; color:black; float:left;">Gillete Fusion 500</div>
+                                            <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                            <div class="jobText" style="line-height:27px; color:black; float:left;">Gillete Fusion Pro 1000</div>
+                                            <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                        </a>
+                                    </li>-->
+                            </ul>
+                            <br style="clear: both;"/>
+                           <!-- <ul class="nav nav-tabs nav-stacked chkNA" style="background-color: #F7F7F7; margin-top: 30px;">
+                                <li>
+                                    <a class="greyLi" style="color:black; border-color:#ababab; height:27px;" onclick="customCheck(this);" >
+                                        <div class="jobText" style="line-height:27px; color:black; float:left;">Klik her hvis ingen varer findes</div>
+                                        <i class="icon-ok" style="float:right; margin-top: 6px; display:none;"></i>
+                                    </a>
+                                </li>
+                            </ul>-->
+                                
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" ></div> <!--onclick="goForwardFooter('#divMyProfile')"></div>-->
+                            <div class="footerButtonAllJobs" ></div> <!--onclick="goForwardFooter('#divFindJobList')"></div>-->
+                            <div class="footerButtonMyJobs"  ></div> <!--onclick="goForwardFooter('#divMyJobs')"></div>-->
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="divStepPhoto">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1>Trin 4 af 5</h1>
+                        <!--onclick="goBack('#divStepPhoto','#divStepMultipleAnswers')"-->
+                        <a  class="header-button header-button-left header-back-button"><button class="l10n-btnBack">Tilbage</button></a>
+                        <!--onclick="showCommitMenu()"-->
+                        <a class="header-button header-button-right header-forward-button" id="A8"><button class="l10n-btnNext">Færdig</button></a>   <!--goForward('#divStepPhoto','#divStepComments')-->
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px; ">
+                        <div style="width:100%; text-align: left; background-color: black; color:white;padding:5px 0 5px 0"><span style="margin-left:10px; text-shadow: none;" class="stepNO">Løs trin 4</span></div>
+                        <div style="padding:10px; background-color: white;">
+                            <h4 style="text-align: left; margin:10px 0 0 0;" class="l10n-question">Spørgsmål</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="question"></p>
+                            
+                            <h4 style="text-align: left; margin-bottom: 0px;"  class="l10n-instructions">Instruktioner</h4>
+                            <p style="width:100%; text-align: left; margin-bottom: 20px;" class="instructions"></p>
+                       
+
+                            <div style="text-align:center;">
+                                <div data-role="controlgroup" data-type="horizontal" class="photoButtons" style="-webkit-transform: translate3d(0, 0, 0);">
+                                    <a data-role="button" onclick="showPhotoAdd(this,1)" style="-webkit-transform: translate3d(0, 0, 0);">
+                                        <img class="photo1" src="assets/img/camera.png" style="height:34px; width:40px;"/> <br/>
+                                        <span style="font-size: 10px;" class="l10n-btnTakePhoto">Tag foto</span>
+                                    </a>
+
+                                    <a data-role="button" onclick="showPhotoAdd(this,2)" style="-webkit-transform: translate3d(0, 0, 0);">
+                                        <img class="photo2" src="assets/img/camera.png" style="height:34px; width:40px;"/><br/>
+                                        <span style="font-size: 10px;" class="l10n-btnTakePhoto">Tag foto</span>
+                                    </a>
+                                    <a data-role="button" onclick="showPhotoAdd(this,3)" style="-webkit-transform: translate3d(0, 0, 0);">
+                                        <img class="photo3" src="assets/img/camera.png" style="height:34px; width:40px;"/><br/>
+                                        <span style="font-size: 10px;" class="l10n-btnTakePhoto">Tag foto</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <br style="clear: both;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" ></div> <!--onclick="goForwardFooter('#divMyProfile')"></div>-->
+                            <div class="footerButtonAllJobs" ></div> <!--onclick="goForwardFooter('#divFindJobList')"></div>-->
+                            <div class="footerButtonMyJobs"  ></div> <!--onclick="goForwardFooter('#divMyJobs')"></div>-->
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <!--my jobs-->
+            <div class="" id="divMyJobs">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-btnMyJobs">Mine job</h1>
+                        <a class="header-button header-button-icon header-button-right" onclick="updateMyjobs();">
+                            <button>
+                                <img src="assets/css/images/refresh-icon.png" style="height: 20px;" />
+                            </button>
+                        </a> 
+                       <!-- <a onclick="updateMyjobs();" class="header-button button-green header-button-icon" style="position:relative; float:right;" id="A2">
+                            <button>
+                                <img src="assets/css/images/refresh-icon.png" style="height: 20px;" />
+                            </button>
+                        </a>-->
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-bottom: 0px; padding-right:0px !important;">
+                            <li>
+                                <a class="whiteLi" id="btnMyJobsCurrentJobs" onclick="goForwardList('#divCurrentJobs')" style="border-left:0px; border-right:0px; height:30px;">
+                                    <div style="float:left; margin-top: 6px;">
+                                        <div class="jobText l10n-currentJobs" style="color:black; float:left;" >Igangværende job</div> <div class="jobText" id="MyJobsCurrentJobsCount" style="color: lightgray; font-size: 12px; margin-left:10px; float:left;"></div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divCurrentJobs')" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divCurrentJobs')" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="whiteLi" id="btnMyJobsAwaitingApprovalJobs" onclick="goForwardList('#divWaitingJobs')" style="border-left:0px; border-right:0px; height:30px;">
+                                    <div style="float:left; margin-top: 6px;">
+                                        <div class="jobText l10n-awaitingApproval" style="color:black; float:left;">Afventer godkendelse</div> <div class="jobText" id="MyJobsAwaitingApprovalJobsCount" style="color: lightgray; font-size: 12px; margin-left:10px; float:left;"></div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divWaitingJobs')" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divWaitingJobs')" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="whiteLi" id="btnMyJobsRejectedJobs" onclick="goForwardList('#divRejectedJobs')" style="border-left:0px; border-right:0px; height:30px;">
+                                    <div style="float:left; margin-top: 6px;">
+                                        <div class="jobText l10n-rejectedJobs" style="color:black; float:left;">Afviste job</div> <div class="jobText" id="MyJobsRejectedJobsCount" style="color: lightgray; font-size: 12px; margin-left:10px; float:left;"></div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divRejectedJobs')" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divRejectedJobs')" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="whiteLi" id="btnMyJobsApprovedJobs" onclick="goForwardList('#divApprovedJobs')" style="border-left:0px; border-right:0px; height:30px;">
+                                    <div style="float:left; margin-top: 6px;">
+                                        <div class="jobText l10n-approvedJobs" style="color:black; float:left;">Godkendte job</div> <div class="jobText" id="MyJobsApprovedJobsCount" style="color: lightgray; font-size: 12px; margin-left:10px; float:left;"></div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divApprovedJobs')" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:8px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divApprovedJobs')" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goToMyProfile(this);"></div>
+                            <div class="footerButtonAllJobs" onclick="goToAllJobs(this);"></div>
+                            <div class="footerButtonMyJobs footerButtonActive" style=""></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <div class="" id="divApprovedJobs">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-approvedJobs">Godkendte job</h1>
+                        <a onclick="goBack('#divMyJobs')" class="header-button header-button-left header-back-button"><button class="l10n-btnMyJobs">Mine job</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-bottom: 0px; padding-right:0px !important;">
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goForwardFooter('#divMyProfile')"></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs footerButtonActive" style=""></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="" id="divRejectedJobs">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-rejectedJobs">Afviste job</h1>
+                        <a onclick="goBack('#divMyJobs')" class="header-button header-button-left header-back-button"><button class="l10n-btnMyJobs">Mine job</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-bottom: 0px; padding-right:0px !important;">
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goForwardFooter('#divMyProfile')"></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs footerButtonActive" style=""></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <div class="" id="divWaitingJobs">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-awaitingApprovalShort">Afv. godkendelse</h1>
+                        <a onclick="goBack('#divMyJobs')" class="header-button header-button-left header-back-button"><button class="l10n-btnMyJobs">Mine job</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-bottom: 0px; padding-right:0px !important;">
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goForwardFooter('#divMyProfile')"></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs footerButtonActive" style=""></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <div class="" id="divCurrentJobs">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-currentJobsShort">Igangværende</h1>
+                        <a onclick="goBack('#divMyJobs')" class="header-button header-button-left header-back-button "><button class="l10n-btnMyJobs">Mine job</button></a>
+                         <a onclick="updateMyjobs();" class="header-button header-button-icon header-button-right" id="A2">
+                            <button>
+                                <img src="assets/css/images/refresh-icon.png" style="height: 20px;" />
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul id="CurrentJobsList" class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-bottom: 0px; padding-right:0px !important;">
+                           <!-- <li>
+                                <a class="whiteLi" style="border-left:0px; border-right:0px;">
+                                    <div style="float:left;">
+                                        <div class="jobText" style="color:black; float:left;">Døgn Netto</div><br style="clear:both;"/>
+                                        <div class="jobText" style="color: #7f7f7f; font-size: 10px; margin-top:0px; line-height: 10px;">Arla Pris tjek</div>
+                                        <div class="jobText" style="color: #7f7f7f; font-size: 10px; margin-top:0px; line-height: 10px;">(Job-ID: 374124)</div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:12px; height:18px;" src="assets/css/images/arrow.png" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:12px; height:18px;" src="assets/css/images/arrow-active.png" />
+                                    <div class="jobText" style="float:right; color: black; margin-right:10px;">
+                                        50 kr.<br/>
+                                        <i style="float:left;" class="icon-time"></i> <div style="float:left; color: red; font-size: 8px; margin:3px 0 0 5px; line-height: 10px;">Udløber: X tidspunkt</div>
+                                    </div>
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>-->
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile" onclick="goForwardFooter('#divMyProfile')"></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs footerButtonActive" style=""></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <!--my profile-->
+            <div class="" id="divMyProfile">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-myProfile">Min profil</h1>
+                        <!--<a onclick="goBack('#divFindJobList')" class="header-button header-button-left header-back-button"><button>Alle job</button></a>-->
+                        <a class="header-button button-red header-button-icon header-button-right" id="A4" onclick="logOut();"><button class="l10n-logOut">Log ud</button></a> 
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <div style="margin:20px 0 0 10px;">
+                            
+                            <!--<img style="float:left; height: 70px; width: 52px;" src="assets/img/camera.png" id="divMyProfilePhoto"/>-->    
+                            
+                            
+                            <div style="margin:10px 0 0 0; float:left; ">
+                                <div style="font-size: 18px; font-weight: bold;" id="divMyProfileName"></div>
+                                <!--<div style="font-size: 12px; line-height: 12px;" id="divMyProfileJobName">Iværksætter</div>-->
+                            </div>
+                        </div>
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-top: 40px; padding-right:0px !important;">
+                            <li>
+                                <a class="whiteLi"  onclick="goForwardList('#divYourAccount')" style="height:30px; border-left:0px; border-right:0px;">
+                                    <div style="float:left; margin-top:4px;">
+                                        <div class="jobText l10n-yourAccount" style="color:black; float:left;">Din konto</div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divYourAccount')" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divYourAccount')" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="whiteLi"  onclick="goForwardList('#divEditProfile')" style="height:30px; border-left:0px; border-right:0px;">
+                                    <div style="float:left; margin-top:4px;">
+                                        <div class="jobText l10n-editProfile" style="color:black; float:left;">Rediger profil</div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divEditProfile')" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divEditProfile')" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>
+                             <li>
+                                <div style="margin: 20px 0 0-8px; width:100%">
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <select id="inputMyProfileChangeLanguage" style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;" onchange="ChangeLanguage()">
+                                            <option value="Auto">Auto</option>
+                                            <option value="da">Dansk</option>
+                                            <option value="sv">Svenska</option>
+                                            <option value="nb">Norsk</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                        <div style="font-family: Helvetica,Arial,sans-serif; font-weight: bold; font-size: 14px; margin-bottom: 10px;" class="l10n-chooseAppLanguage">*Vælg app-sprog</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!--<li>
+                                <a class="whiteLi"  onclick="goForwardList('#divSettings')" style="height:30px; border-left:0px; border-right:0px;">
+                                    <div style="float:left; margin-top:4px;">
+                                        <div class="jobText" style="color:black; float:left;">Indstillinger</div>
+                                    </div>
+                                    <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" />
+                                    <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" />
+                                    <br style="clear:both;"/>
+                                </a>
+                            </li>-->
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goToAllJobs(this);"></div>
+                            <div class="footerButtonMyJobs" onclick="goToMyJobs(this);"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <div id="divSettings">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-settings">Indstillinger</h1>
+                        <a onclick="goBack('#divMyProfile')" class="header-button header-button-left header-back-button"><button class="l10n-myProfile">Min profil</button></a>
+                    </div>
+                </div>
+                <div id="Div1" style="overflow: hidden;">
+                    <div class="content stage-right">
+                        <div class="scroll" style="bottom:50px;">
+                            <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; padding-right:0px !important;">
+                                <!--<li>
+                                    <a class="whiteLi"  onclick="goForwardList('#divPayPalSettings')" style="height:30px; border-left:0px; border-right:0px;">
+                                        <div style="float:left; margin-top:4px;">
+                                            <div class="jobText" style="color:black; float:left;">PayPal Indstillinger</div>
+                                        </div>
+                                        <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" />
+                                        <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" />
+                                        <br style="clear:both;"/>
+                                    </a>
+                                </li>-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            
+                
+            <div id="divEditProfile">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-editProfile">Rediger profil</h1>
+                        <a onclick="goBack('#divMyProfile')" class="header-button header-button-left header-back-button"><button class="l10n-myProfile">Min profil</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px; width:100%;">
+                        <div style="margin:20px 0 0 10px;">
+                            <div style=" background-color: hotpink;"></div>
+                            <!--<a style="float:left;" onclick="showPhotoAdd(this,0)">
+                                <img style="height: 70px; width: 52px;" src="assets/img/camera.png" id="divEditProfilePhoto"/>
+                            </a>-->
+                            <div style="margin:10px 0 0 0; float:left; ">
+                                <div style="font-size: 18px; font-weight: bold;" id="divEditProfileName"></div>
+                                <!--<div style="font-size: 12px; line-height: 12px;" id="divEditProfileJobName">Iværksætter</div>-->
+                                
+                            </div>
+                        </div>
+                        
+                            <ul class="nav nav-list nav-tabs nav-stacked ul-fullpage" style=" border-radius: 0; background-color: white; margin-top: 40px; padding-right:0px !important;">
+                                <li>
+                                    <a class="whiteLi" onclick="reloadMyProfile();  goForwardList('#divEditProfileBasic');" style="height:30px; border-left:0px; border-right:0px;">
+                                        <div style="float:left; margin-top:4px;">
+                                            <div class="jobText l10n-generalInfo" style="color:black; float:left;">Generel info</div>
+                                        </div>
+                                        <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" onclick="reloadMyProfile();  goForwardList('#divEditProfileBasic');" />
+                                        <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" onclick="reloadMyProfile();  goForwardList('#divEditProfileBasic');" />
+                                        <br style="clear:both;"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="whiteLi" onclick="goForwardList('#divEditProfileChangePassword')" style="height:30px; border-left:0px; border-right:0px;">
+                                        <div style="float:left; margin-top:4px;">
+                                            <div class="jobText l10n-changePassword" style="color:black; float:left;">Skift kodeord</div>
+                                        </div>
+                                        <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" onclick="goForwardList('#divEditProfileChangePassword')" />
+                                        <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" onclick="goForwardList('#divEditProfileChangePassword')" />
+                                        <br style="clear:both;"/>
+                                    </a>
+                                </li>
+                                <!--<li>
+                                    <a class="whiteLi" onclick="goForwardList('#divPayPalSettings')" style="height:30px; margin-left:0px;">
+                                        <div style="float:left; margin-top:4px;">
+                                            <div class="jobText" style="color:black; float:left;">Bank info</div>
+                                        </div>
+                                        <img class="jobListArrow" style="float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow.png" />
+                                        <img class="jobListArrowActive" style=" display: none; float:right; margin-top:6px; height:18px;" src="assets/css/images/arrow-active.png" />
+                                        <br style="clear:both;"/>
+                                    </a>
+                                </li>-->
+                                <!--<li>
+                                    <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                        <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                            Hvad arbejder du med:
+                                        </div>
+                                        <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                        <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                            <input id="" class="inputtextbox" type="text" 
+                                                   style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                        <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                            Stilling:
+                                        </div>
+                                        <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                        <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                            <input id="" class="inputtextbox" type="text" 
+                                                   style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                        <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                            Firma: 
+                                        </div>
+                                        <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                        <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                            <input id="" class="inputtextbox" type="text" 
+                                                   style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%;">
+                                        <div class="inputLabel" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                            Uddannelse: 
+                                        </div>
+                                        <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                        <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                            <input id="" class="inputtextbox" type="text" 
+                                                   style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        </div>
+                                    </div>
+                                </li>-->
+                            </ul>
+                        
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="divEditProfileBasic">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-general">Generelt</h1>
+                        <a onclick="goBack('#divEditProfile')" class="header-button header-button-left header-back-button"><button class="l10n-editProfile">Rediger profil</button></a>
+                        <a onclick="showConfirmUpdateUser()" class="header-button button-green header-button-icon header-button-right search "><button class="l10n-save">Gem</button></a>
+                        
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px; width:100%;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-form" style="background-color: #F7F7F7; margin:20px 15px 20px 15px; padding-left: 0px !important; padding-right:0px !important;">
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <div class="inputLabel l10n-firstName" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Fornavn: 
+                                    </div>
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputUpdateUserFirstName" class="inputtextbox l10n-ph-firstName" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <div class="inputLabel l10n-lastName" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Efternavn: 
+                                    </div>
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputUpdateUserLastName" class="inputtextbox l10n-ph-lastName" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div style="border:1px solid #ababab; width:100%">
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <div id="inputUpdateUserZips" style="max-height:150px; border:1px solid black; overflow:scroll;">
+                                        </div>
+                                        <!--<select id="inputUpdateUserZips" multiple style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;">
+
+                                        </select>-->
+                                        <div style="font-family: Helvetica,Arial,sans-serif; font-weight: bold; font-size: 14px; margin-bottom: 10px;" class="l10n-chooseZipCodes">*Vælg de postnumre du vil udføre opgaver i</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <div class="inputLabel l10n-email" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Email: 
+                                    </div>
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputUpdateUserEmail" class="inputtextbox l10n-ph-email" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div style="border:1px solid #ababab; width:100%">
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <select id="inputUpdateUserCountryCodes" style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;">
+
+                                        </select>
+                                        <div style="font-family: Helvetica,Arial,sans-serif; font-weight: bold; font-size: 14px; margin-bottom: 10px;" class="l10n-chooseCountryCode">*Vælg din landekode</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <div class="inputLabel l10n-phoneNumber" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        Telefonnummer: 
+                                    </div>
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="inputUpdateUserPhoneNumber" class="inputtextbox l10n-ph-phoneNumber" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div id="divEditProfileChangePassword">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-changePassword">Skift kode</h1>
+                        <a onclick="goBack('#divEditProfile')" class="header-button header-button-left header-back-button"><button class="l10n-editProfile">Rediger profil</button></a>
+                        <a onclick="UpdatePassword()" class="header-button button-green header-button-icon header-button-right search"><button class="l10n-save">Gem</button></a>
+                        
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px; width:100%;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-form" style="background-color: #F7F7F7; margin:20px 15px 20px 15px; padding-left: 0px !important; padding-right:0px !important;">
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                   
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="divEditProfileChangePasswordOld" class="inputtextbox l10n-ph-currentPassword" type="password" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="divEditProfileChangePasswordNew" class="inputtextbox l10n-ph-newPassword" type="password" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="divEditProfileChangePasswordNewRepeat" class="inputtextbox l10n-ph-repeatNewPassword" type="password" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        <a onclick="UpdatePassword()" class="content-button button-green" id="A3">
+                            <button style="margin-left:5px; width:300px; height:40px; font-size:16px;" class="l10n-saveChanges">Gem ændringer</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div id="divPayPalSettings">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-bankInfo">Bank info</h1>
+                        <a onclick="goBack('#divEditProfile')" class="header-button header-button-left header-back-button"><button class="l10n-btnBack">Tilbage</button></a>
+                         <a onclick="" class="header-button button-green header-button-icon header-button-right search"><button class="l10n-save">Gem</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <ul class="nav nav-list nav-tabs nav-stacked ul-form" style="background-color: #F7F7F7; margin:20px 15px 20px 15px; padding-left: 0px !important; padding-right:0px !important;">
+                            <li>
+                                <div onclick="activateInputDiv(this);"style="border:1px solid #ababab; width:100%">
+                                    <div class="inputLabel l10n-payPalEmail" style="font-weight: bold; float:left; height:43px; line-height: 43px; padding: 0 10px 0 10px;">
+                                        PayPal-email: 
+                                    </div>
+                                    <i class="icon-pencil" style="float:right; margin: 13px 10px 0 0;"></i>
+                                    <div style="overflow:hidden; padding: 0 10px 0 10px;">
+                                        <input id="txtPayPalSettingsEmail" class="inputtextbox l10n-ph-payPalEmail" type="text" placeholder=""
+                                               style="outline: 0; -webkit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; color:#385487; border:none !important; background-color: #F7F7F7; /*border-radius: 0 !important;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                
+            <div id="divYourAccount">
+                <div class="head">
+                    <div class="header header-blue">
+                        <h1 class="l10n-yourAccount">Din konto</h1>
+                        <a onclick="goBack('#divMyProfile')" class="header-button header-button-left header-back-button"><button class="l10n-myProfile">Min profil</button></a>
+                    </div>
+                </div>
+                <div class="content stage-right">
+                    <div class="scroll" style="bottom:50px;">
+                        <!--<div style="left:50%; position: relative; width:320px;">
+                            <div style="left:-50%; position: absolute;">-->
+                                <div style="padding:10px;">
+                                    <div style="font-size: 24px; font-weight: bold; margin-bottom:5px;" class="l10n-availableBalance">Tilgængelig saldo</div>
+                                    <div style="font-family: Arial; font-weight: bold; color: darkgray;" class="l10n-balanceCanBeTransfered">Saldoen kan overføres til din bankkonto</div>
+                            
+                                    <div style=" background-color: darkgray; margin-top: 15px; padding:10px;">
+                                        <div style="margin-top:2px; font-family: Arial; font-weight: bold; color: black; float:left; vertical-align: top; text-shadow: none;" class="l10n-yourBalance">Din saldo:</div>
+                                        <div style="float:right; margin-top:6px; font-size: 24px; font-weight: bold; vertical-align: top; text-shadow: none;">kr.</div>
+                                        <div style="float:right; line-height: 48px;font-size: 48px; font-weight: bold; vertical-align: top; text-shadow: none;" id="divYourAccountMoneyEarned">10</div>
+                                        <br style="clear:both;"/>
+                                    </div>
+                            
+                                    <!--<div style="margin-bottom:15px;">
+                                        <div style="font-family: Arial; color: darkgray; margin-top: 15px;">Din PayPal-Konto</div>
+                                        <div id="divYourAccountPayPal" style="color: black; font-size: 18px; float:left; margin-right:15px;"></div>
+                                        <a onclick="goBack('#divEditProfileBasic')" style="float:left; padding-top: 1px;">-skift konto</a>
+                                        <br style="clear:both;"/>
+                                    </div>-->
+
+                                    <div style="margin-bottom:15px;">
+                                        <div style="font-family: Arial; color: darkgray; margin-top: 15px;" class="l10n-amountToBeTransfered">Beløb der skal overføres</div>
+                                        <input id="txtMoneyToTransfer" class=" l10n-ph-enterAmount" placeholder="" type="text" style="float:left; width:260px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ margin:0;padding:0px 0px 0px 5px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        <div style="float:left; color: darkgrey; font-size: 24px; font-weight: bold; vertical-align: bottom; text-shadow: none; margin:22px 0 0 5px;">kr.</div>
+                                        <br style="clear:both;"/>
+                                    </div>
+                            
+                                    <div style="margin-bottom:15px;">
+                                        <div style="font-family: Arial; color: darkgray; margin-top: 15px;" class="l10n-receiversAccount">Konto der skal overføres til</div>
+                                        <input id="txtTransferReg" class=" l10n-ph-bankCodeShort" placeholder="" type="text" style="float:left; width:80px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ margin:0 5px 0 0; padding:0px 0px 0px 5px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        <input id="txtTransferAccount" class=" l10n-ph-accountNumberShort" placeholder="" type="text" style="float:left; width:170px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ margin:0; padding:0px 0px 0px 5px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        <br style="clear:both;"/>
+                                    </div>
+                            
+                                    <!-- <div style="margin-bottom:15px;">
+                                        <div style="font-family: Arial; color: darkgray; margin-top: 15px;">Skriv dit kodeord</div>
+                                        <input id="txtTransferPW" type="password" style="float:left; width:260px; border:1px solid darkgrey; color:#385487; /*background-color: #F7F7F7;*/ margin:0;padding:0px; height:43px; vertical-align: middle; font-size: 18px;"/>
+                                        <br style="clear:both;"/>
+                                    </div>-->
+                                
+                                    <a onclick="transferMoney()" class="content-button button-green" id="A11">
+                                        <button style="margin-left:5px; width:280px; height:40px; font-size:16px;" class="l10n-withdraw">Udbetal penge</button>
+                                    </a>
+                                    <div style="font-family: Helvetica,Arial,sans-serif; font-weight: bold; font-size: 12px; margin-bottom: 10px; width: 280px; padding:10px;" class="l10n-ourSystemTransfers">*Vores system overfører udbetalingerne samlet hver fredag kl. 12.00 – så du har dine penge mandag</div>
+                                </div>
+                       <!--     </div>
+                        </div>-->
+                        
+                    </div>
+                    <!--<div id="divConfirmTransferBG" style="display:none; width:100%; top:0px; height:480px; position: absolute; background-color: rgba(0,0,0,0.8); z-index: 2;">
+                        </div>-->
+                         
+                </div>
+                <div class="foot">
+                    <!--<div class="footerFade"></div>-->
+                    <div class="footer">
+                        <div style="width: 320px; margin: 0 auto;">
+                            <div class="footerButtonProfile footerButtonActive" style=""></div>
+                            <div class="footerButtonAllJobs" onclick="goForwardFooter('#divFindJobList')"></div>
+                            <div class="footerButtonMyJobs" onclick="goForwardFooter('#divMyJobs')"></div>
+                            <br style="clear: both"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="StepDivs" style="display:none;">
+        </div>
+    <!--</span>--> 
+        <!--end fastclick -->
+    </body>
 </html>
