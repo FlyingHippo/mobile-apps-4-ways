@@ -24,17 +24,14 @@
 
     $(document).on("ready", function () {
         alert("doc ready");
-        $('#calcTip').on('click', calcTip);
-        $('#saveSettings').on('click', saveSettings);
-        var tipPercentSetting = localStorage.getItem('tipPercentage');
-        if (tipPercentSetting) {
-            tipPercent = parseFloat(tipPercentSetting);
+        if (testrun) {
+            onDeviceReady();
         }
-        $('#tipPercentage').val(tipPercent);
     });
 
     $(document).on("deviceready", function () {
         alert("device ready");
+        onDeviceReady();
         StatusBar.overlaysWebView(false);
         StatusBar.backgroundColorByName("gray");
     });

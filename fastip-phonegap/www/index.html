@@ -175,15 +175,16 @@
         }
 
         function onDeviceReady() {
-
+            alert("bla1");
             document.addEventListener("resume", onResume, false);
-
+            alert("bla2");
             bindTouch();
-
+            alert("bla3");
             if (testrun == false) {
                 setupCamera();
                 checkLocation();
             }
+            alert("bla4");
             //else {
             //    var latitude = 56.16390607394954;
             //    var longitude = 10.56884765625;
